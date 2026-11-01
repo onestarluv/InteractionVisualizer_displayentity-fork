@@ -174,7 +174,13 @@ public class InteractionVisualizer extends JavaPlugin {
         }
 
         MusicManager.setup();
-        Database.setup();
+        try {
+            Database.setup();
+        } catch (RuntimeException e) {
+            getLogger().log(java.util.logging.Level.SEVERE, "데이터베이스 초기화에 실패하여 플러그인을 중지합니다.", e);
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         preferenceManager = new PreferenceManager(this);
         TaskManager.setup();
         TileEntityManager._init_();
@@ -230,9 +236,11 @@ public class InteractionVisualizer extends JavaPlugin {
         if (version == null || !version.isSupported()) {
             return;
         }
-        preferenceManager.close();
+        if (preferenceManager != null) {
+            preferenceManager.close();
+        }
 
-        if (!Bukkit.getOnlinePlayers().isEmpty()) {
+        if (!PacketManager.active.isEmpty() && !Bukkit.getOnlinePlayers().isEmpty()) {
             getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[kokonut_ineteraction] 플러그인 리로드를 감지해 표시 엔티티를 제거합니다. 문제가 생기면 서버를 재시작하세요.");
             int[] entityIdArray = PacketManager.active.keySet().stream().mapToInt(each -> each.getEntityId()).toArray();
             Object[] packets = NMS.getInstance().createEntityDestroyPacket(entityIdArray);
@@ -244,7 +252,9 @@ public class InteractionVisualizer extends JavaPlugin {
             }
         }
 
-        asyncExecutorManager.close();
+        if (asyncExecutorManager != null) {
+            asyncExecutorManager.close();
+        }
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] 플러그인을 비활성화했습니다.");
     }
 

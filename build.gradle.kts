@@ -43,6 +43,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.13.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly("org.xerial:sqlite-jdbc:3.51.3.0")
 }
 
 tasks.withType<JavaCompile>().configureEach {

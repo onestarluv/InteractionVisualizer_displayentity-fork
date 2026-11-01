@@ -105,42 +105,22 @@ public class Database {
             }
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] MySQL 연결에 실패했습니다. (SQLException)");
-            e.printStackTrace();
+            throw new IllegalStateException("MySQL 연결에 실패했습니다.", e);
         } catch (ClassNotFoundException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] MySQL 드라이버를 찾을 수 없습니다. (ClassNotFoundException)");
-            e.printStackTrace();
+            throw new IllegalStateException("MySQL 드라이버를 찾을 수 없습니다.", e);
         }
     }
 
     private static void sqliteSetup(boolean echo) {
         try {
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:plugins/InteractionVisualizer/database.db");
-            if (echo) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[kokonut_ineteraction] SQLite 데이터베이스를 열었습니다.");
-            }
-
-            Statement stmt0 = connection.createStatement();
-            String sql0 = "CREATE TABLE IF NOT EXISTS " + preferenceTable + " (UUID TEXT PRIMARY KEY, NAME TEXT NOT NULL, ITEMSTAND TEXT, ITEMDROP TEXT, HOLOGRAM TEXT);";
-            stmt0.executeUpdate(sql0);
-            stmt0.close();
-
-            Statement stmt1 = connection.createStatement();
-            String sql1 = "CREATE TABLE IF NOT EXISTS " + indexMappingTable + " (ENTRY TEXT PRIMARY KEY, BITMASK_INDEX INTEGER);";
-            stmt1.executeUpdate(sql1);
-            stmt1.close();
-
-            Statement stmt2 = connection.createStatement();
-            String sql2 = "CREATE TABLE IF NOT EXISTS " + statusLockTable + " (STATUS_LOCK BOOLEAN PRIMARY KEY);";
-            stmt2.executeUpdate(sql2);
-            stmt2.close();
+            connection = SqliteStore.open(InteractionVisualizer.plugin.getDataFolder().toPath());
+            if (echo) Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[kokonut_ineteraction] SQLite 데이터베이스를 열었습니다.");
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] SQLite 데이터베이스에 연결할 수 없습니다.");
-            e.printStackTrace();
-            InteractionVisualizer.plugin.getPluginLoader().disablePlugin(InteractionVisualizer.plugin);
+            connection = null;
+            throw new IllegalStateException("SQLite 데이터베이스를 초기화할 수 없습니다.", e);
         }
     }
-
     public static Connection getConnection() {
         return connection;
     }
