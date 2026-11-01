@@ -5,7 +5,6 @@ import java.util.Map;
 
 final class CommandLanguage {
     static final Map<String, String> ACTIONS = Map.of("토글", "toggle", "새로고침", "refresh", "리로드", "reload", "업데이트", "update");
-    static final Map<String, String> MODULES = Map.of("전체", "all", "아이템", "itemstand", "드롭", "itemdrop", "홀로그램", "hologram");
     static final Map<String, String> VALUES = Map.of("켜기", "true", "끄기", "false");
     static final Map<String, String> ENTRIES = new LinkedHashMap<>();
     static {
@@ -29,9 +28,23 @@ final class CommandLanguage {
         if (args.length == 0) return args;
         args[0] = ACTIONS.getOrDefault(args[0], args[0]);
         if (!args[0].equalsIgnoreCase("toggle")) return args;
-        if (args.length > 1) args[1] = MODULES.getOrDefault(args[1], args[1]);
-        if (args.length > 2) args[2] = ENTRIES.getOrDefault(args[2], args[2]);
-        if (args.length > 3) args[3] = VALUES.getOrDefault(args[3], args[3]);
+        if (args.length > 1) args[1] = ENTRIES.getOrDefault(args[1], args[1]);
+        if (args.length > 2) args[2] = VALUES.getOrDefault(args[2], args[2]);
         return args;
+    }
+
+    record ToggleArguments(String entry, Boolean enabled, String player) {}
+
+    static ToggleArguments toggleArguments(String[] args) {
+        if (args.length < 2 || args.length > 4) throw new IllegalArgumentException();
+        Boolean enabled = null;
+        String player = null;
+        if (args.length >= 3) {
+            if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")) enabled = Boolean.valueOf(args[2]);
+            else if (args.length == 3) player = args[2];
+            else throw new IllegalArgumentException();
+        }
+        if (args.length == 4) player = args[3];
+        return new ToggleArguments(args[1], enabled, player);
     }
 }

@@ -12,10 +12,10 @@ Messages:
   NoPermission: "&c이 명령어를 사용할 권한이 없습니다."
   Reload: "&aInteractionVisualizer 설정을 다시 불러왔습니다."
   Toggle:
-    Usage: "&c사용법: /시각효과 토글 <아이템/드롭/홀로그램/전체> <블록/전체> [켜기/끄기] [플레이어]"
+    Usage: "&c사용법: /시각효과 토글 <블록/전체> [켜기/끄기] [플레이어]"
     Modes: "&c표시 종류: 아이템, 드롭, 홀로그램, 전체"
     Entries: "&c사용 가능한 항목: %s"
-    Console: "&c플레이어를 지정하세요: /시각효과 토글 <종류> <블록/전체> <켜기/끄기> <플레이어>"
+    Console: "&c플레이어를 지정하세요: /시각효과 토글 <블록/전체> <켜기/끄기> <플레이어>"
     ToggleOn: "&a%e %m 표시를 켰습니다."
     ToggleOff: "&e%e %m 표시를 껐습니다."
     PlayerNotFound: "&c해당 플레이어가 접속 중이 아닙니다."

@@ -21,6 +21,7 @@
 package com.loohp.interactionvisualizer;
 
 import com.loohp.interactionvisualizer.api.InteractionVisualizerAPI.Modules;
+import com.loohp.interactionvisualizer.api.InteractionVisualizerAPI;
 import com.loohp.interactionvisualizer.managers.MaterialManager;
 import com.loohp.interactionvisualizer.managers.MusicManager;
 import com.loohp.interactionvisualizer.managers.PacketManager;
@@ -111,140 +112,45 @@ public class Commands implements CommandExecutor, TabCompleter {
         }
 
         if (args[0].equalsIgnoreCase("toggle")) {
-            if (sender.hasPermission("interactionvisualizer.toggle")) {
-                if ((args.length == 4 && (args[3].equalsIgnoreCase("true") || args[3].equalsIgnoreCase("false"))) || args.length == 3) {
-                    if (!(sender instanceof Player)) {
-                        sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.Console")));
-                        return true;
-                    }
-                    Player player = (Player) sender;
-                    InteractionVisualizer.asyncExecutorManager.runTaskAsynchronously(() -> {
-                        EntryKey[] entries;
-                        String verboseEntry = null;
-                        if (args[2].equalsIgnoreCase("all")) {
-                            entries = InteractionVisualizer.preferenceManager.getRegisteredEntries().toArray(new EntryKey[0]);
-                            verboseEntry = ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.All"));
-                        } else {
-                            entries = new EntryKey[] {new EntryKey(args[2])};
-                        }
-                        if (args.length == 4) {
-                            boolean value = args[3].equalsIgnoreCase("true");
-                            switch (args[1].toLowerCase()) {
-                                case "itemstand":
-                                    Toggle.toggle(sender, player, Modules.ITEMSTAND, value, true, verboseEntry, entries);
-                                    break;
-                                case "itemdrop":
-                                    Toggle.toggle(sender, player, Modules.ITEMDROP, value, true, verboseEntry, entries);
-                                    break;
-                                case "hologram":
-                                    Toggle.toggle(sender, player, Modules.HOLOGRAM, value, true, verboseEntry, entries);
-                                    break;
-                                case "all":
-                                    for (Modules modules : Modules.values()) {
-                                        Toggle.toggle(sender, player, modules, value, true, verboseEntry, entries);
-                                    }
-                                    break;
-                                default:
-                                    sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.Modes")));
-                            }
-                        } else {
-                            switch (args[1].toLowerCase()) {
-                                case "itemstand":
-                                    Toggle.toggle(sender, player, Modules.ITEMSTAND, true, verboseEntry, entries);
-                                    break;
-                                case "itemdrop":
-                                    Toggle.toggle(sender, player, Modules.ITEMDROP, true, verboseEntry, entries);
-                                    break;
-                                case "hologram":
-                                    Toggle.toggle(sender, player, Modules.HOLOGRAM, true, verboseEntry, entries);
-                                    break;
-                                case "all":
-                                    for (Modules modules : Modules.values()) {
-                                        Toggle.toggle(sender, player, modules, true, verboseEntry, entries);
-                                    }
-                                    break;
-                                default:
-                                    sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.Modes")));
-                            }
-                        }
-                    });
-                    return true;
-                } else if (args.length == 5 || args.length == 4) {
-                    Player player = Bukkit.getPlayer(args[args.length == 4 ? 3 : 4]);
-                    if (sender instanceof Player) {
-                        if (player != null) {
-                            if (!player.equals(sender)) {
-                                if (!sender.hasPermission("interactionvisualizer.toggle.others")) {
-                                    sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.NoPermission")));
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    if (player == null) {
-                        sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.PlayerNotFound")));
-                        return true;
-                    }
-                    InteractionVisualizer.asyncExecutorManager.runTaskAsynchronously(() -> {
-                        EntryKey[] entries;
-                        String verboseEntry = null;
-                        if (args[2].equalsIgnoreCase("all")) {
-                            entries = InteractionVisualizer.preferenceManager.getRegisteredEntries().toArray(new EntryKey[0]);
-                            verboseEntry = ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.All"));
-                        } else {
-                            entries = new EntryKey[] {new EntryKey(args[2])};
-                        }
-                        if (args.length == 5) {
-                            boolean value = args[3].equalsIgnoreCase("true");
-                            switch (args[1].toLowerCase()) {
-                                case "itemstand":
-                                    Toggle.toggle(sender, player, Modules.ITEMSTAND, value, true, verboseEntry, entries);
-                                    break;
-                                case "itemdrop":
-                                    Toggle.toggle(sender, player, Modules.ITEMDROP, value, true, verboseEntry, entries);
-                                    break;
-                                case "hologram":
-                                    Toggle.toggle(sender, player, Modules.HOLOGRAM, value, true, verboseEntry, entries);
-                                    break;
-                                case "all":
-                                    for (Modules modules : Modules.values()) {
-                                        Toggle.toggle(sender, player, modules, value, true, verboseEntry, entries);
-                                    }
-                                    break;
-                                default:
-                                    sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.Modes")));
-                            }
-                        } else {
-                            switch (args[1].toLowerCase()) {
-                                case "itemstand":
-                                    Toggle.toggle(sender, player, Modules.ITEMSTAND, true, verboseEntry, entries);
-                                    break;
-                                case "itemdrop":
-                                    Toggle.toggle(sender, player, Modules.ITEMDROP, true, verboseEntry, entries);
-                                    break;
-                                case "hologram":
-                                    Toggle.toggle(sender, player, Modules.HOLOGRAM, true, verboseEntry, entries);
-                                    break;
-                                case "all":
-                                    for (Modules modules : Modules.values()) {
-                                        Toggle.toggle(sender, player, modules, true, verboseEntry, entries);
-                                    }
-                                    break;
-                                default:
-                                    sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.Modes")));
-                            }
-                        }
-                    });
-                    return true;
-                } else {
-                    sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.Usage")));
-                }
+            if (!sender.hasPermission("interactionvisualizer.toggle")) {
+                sender.sendMessage(ChatColor.RED + "이 명령어를 사용할 권한이 없습니다.");
                 return true;
             }
-            sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.NoPermission")));
+            final CommandLanguage.ToggleArguments request;
+            try {
+                request = CommandLanguage.toggleArguments(args);
+            } catch (IllegalArgumentException e) {
+                sender.sendMessage(ChatColor.RED + "사용법: /시각효과 토글 <블록/전체> [켜기/끄기] [플레이어]");
+                return true;
+            }
+            Player player = request.player() == null ? (sender instanceof Player self ? self : null) : Bukkit.getPlayerExact(request.player());
+            if (player == null) {
+                sender.sendMessage(ChatColor.RED + (request.player() == null ? "콘솔에서는 대상 플레이어를 지정하세요." : "해당 플레이어가 접속 중이 아닙니다."));
+                return true;
+            }
+            if (sender instanceof Player && !player.equals(sender) && !sender.hasPermission("interactionvisualizer.toggle.others")) {
+                sender.sendMessage(ChatColor.RED + "다른 플레이어의 설정을 변경할 권한이 없습니다.");
+                return true;
+            }
+            final EntryKey[] entries;
+            final String group;
+            try {
+                if (request.entry().equalsIgnoreCase("all")) {
+                    entries = InteractionVisualizer.preferenceManager.getRegisteredEntries().toArray(new EntryKey[0]);
+                    group = "전체";
+                } else {
+                    EntryKey entry = new EntryKey(request.entry());
+                    if (!InteractionVisualizerAPI.isRegisteredEntry(entry)) throw new IllegalArgumentException();
+                    entries = new EntryKey[] {entry};
+                    group = InteractionVisualizerAPI.getUserFriendlyName(entry);
+                }
+            } catch (IllegalArgumentException e) {
+                sender.sendMessage(ChatColor.RED + "지원하지 않는 블록 또는 항목입니다. 자동완성에서 선택하세요.");
+                return true;
+            }
+            InteractionVisualizer.asyncExecutorManager.runTaskAsynchronously(() -> Toggle.toggleAll(sender, player, request.enabled(), group, entries));
             return true;
         }
-
         if (args[0].equalsIgnoreCase("ethereal")) {
             Component text = Component.text("그녀는 상상 속에 있어요~~");
             text = text.color(NamedTextColor.YELLOW);
@@ -254,7 +160,7 @@ public class Commands implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        sender.sendMessage(ChatColor.RED + "알 수 없는 명령어입니다. /시각효과 토글 <종류> <블록/전체> [켜기/끄기]를 사용하세요.");
+        sender.sendMessage(ChatColor.RED + "알 수 없는 명령어입니다. /시각효과 토글 <블록/전체> [켜기/끄기]를 사용하세요.");
         return true;
     }
 
@@ -271,20 +177,20 @@ public class Commands implements CommandExecutor, TabCompleter {
                 }
             });
         } else if (args[0].equalsIgnoreCase("toggle") && sender.hasPermission("interactionvisualizer.toggle")) {
-            if (args.length == 2) candidates.putAll(CommandLanguage.MODULES);
-            if (args.length == 3) {
+            
+            if (args.length == 2) {
                 candidates.putAll(CommandLanguage.ENTRIES);
                 InteractionVisualizer.preferenceManager.getRegisteredEntries().forEach(entry -> candidates.put(entry.toString(), entry.toString()));
             }
-            if (args.length == 4) candidates.putAll(CommandLanguage.VALUES);
-            if (args.length == 5 && sender.hasPermission("interactionvisualizer.toggle.others")) {
+            if (args.length == 3) candidates.putAll(CommandLanguage.VALUES);
+            if ((args.length == 3 || args.length == 4) && sender.hasPermission("interactionvisualizer.toggle.others")) {
                 Bukkit.getOnlinePlayers().forEach(player -> candidates.put(player.getName(), player.getName()));
             }
             new java.util.ArrayList<>(candidates.values()).forEach(value -> candidates.put(value, value));
         }
         String prefix = input.length == 0 ? "" : input[input.length - 1].toLowerCase(java.util.Locale.ROOT);
         candidates.keySet().stream()
-                .filter(value -> !prefix.isEmpty() || args.length == 5 || value.codePoints().anyMatch(c -> c >= 0xAC00 && c <= 0xD7A3))
+                .filter(value -> !prefix.isEmpty() || args.length >= 3 || value.codePoints().anyMatch(c -> c >= 0xAC00 && c <= 0xD7A3))
                 .filter(value -> value.toLowerCase(java.util.Locale.ROOT).startsWith(prefix)).forEach(tab::add);
         return tab;
     }

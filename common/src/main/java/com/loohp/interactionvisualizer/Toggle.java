@@ -28,6 +28,25 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Toggle {
+    public static boolean toggleAll(CommandSender sender, Player player, Boolean requested, String group, EntryKey... entries) {
+        boolean anyEnabled = false;
+        for (EntryKey entry : entries) {
+            if (!InteractionVisualizerAPI.isRegisteredEntry(entry)) return false;
+            for (Modules module : Modules.values()) {
+                anyEnabled |= InteractionVisualizerAPI.hasPlayerEnabledModule(player, module, entry);
+            }
+        }
+        boolean enabled = requested == null ? !anyEnabled : requested;
+        for (EntryKey entry : entries) {
+            for (Modules module : Modules.values()) {
+                InteractionVisualizer.preferenceManager.setPlayerPreference(player.getUniqueId(), module, entry, enabled, false);
+            }
+        }
+        InteractionVisualizer.preferenceManager.updatePlayer(player, true);
+        String message = plugin.getConfiguration().getString(enabled ? "Messages.Toggle.ToggleOn" : "Messages.Toggle.ToggleOff");
+        sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', message.replace("%e", group).replace("%m", "전체 효과")));
+        return true;
+    }
 
     private static final InteractionVisualizer plugin = InteractionVisualizer.plugin;
 
