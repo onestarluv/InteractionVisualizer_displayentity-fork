@@ -26,6 +26,12 @@ More information (screenshots, commands, permissions) about the plugin can be fo
 
 기존 설치에서 이름을 변경할 때는 서버를 종료한 뒤 plugins/InteractionVisualizer의 데이터를 plugins/kokonut_ineteraction으로 복사해야 개인 설정 DB와 기존 설정이 이어집니다.
 
+## 데이터베이스 저장 경로
+
+SQLite 데이터베이스는 현재 플러그인 데이터 폴더인 `plugins/kokonut_ineteraction/database.db`에 저장됩니다. 신규 설치에서는 폴더와 DB를 자동으로 생성하며, 이전 이름의 `InteractionVisualizer` 폴더를 따로 만들 필요가 없습니다.
+
+DB 초기화에 실패하면 플러그인 시작을 중단합니다. 종료 시에는 초기화된 매니저만 정리하므로 초기화 실패에 따른 추가 null 오류를 방지합니다.
+
 ## 서버 공통 설정
 
 주 설정은 `ServerSetting` enum에서 관리하며, `ServerSettings` record가 서버 전체에서 공유하는 읽기 전용 설정을 제공합니다. enum 값을 수정한 뒤 빌드하면 새 기본값이 적용됩니다. 신규 서버에는 주 `config.yml`을 생성하지 않습니다.
