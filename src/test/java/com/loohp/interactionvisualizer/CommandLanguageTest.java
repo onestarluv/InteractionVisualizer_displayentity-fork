@@ -38,4 +38,23 @@ class CommandLanguageTest {
         assertThrows(IllegalArgumentException.class, () -> CommandLanguage.toggleArguments(new String[] {"toggle", "all", "invalid", "Steve"}));
         assertThrows(IllegalArgumentException.class, () -> CommandLanguage.toggleArguments(new String[] {"toggle", "all", "all", "false", "Steve"}));
     }
+
+    @Test void spacedOfficialNamesShiftOnlyTheEntryArguments() {
+        assertArrayEquals(new String[] {"toggle", "enchantment_table", "false", "Steve"},
+                CommandLanguage.normalize(new String[] {"토글", "마법", "부여대", "끄기", "Steve"}));
+        assertArrayEquals(new String[] {"toggle", "smithing_table", "true"},
+                CommandLanguage.normalize(new String[] {"토글", "대장장이", "작업대", "켜기"}));
+        assertArrayEquals(new String[] {"toggle", "ender_chest", ""},
+                CommandLanguage.normalize(new String[] {"토글", "엔더", "상자", ""}));
+    }
+
+    @Test void oldAliasesStillResolveButCanonicalLabelsMatchTheGame() {
+        assertEquals("enchantment_table", KoreanEntry.resolve("인챈트대"));
+        assertEquals("conduit", KoreanEntry.resolve("도관"));
+        assertEquals("cartography_table", KoreanEntry.resolve("지도제작대"));
+        assertEquals("전달체", KoreanEntry.correctDefaultLabel("interactionvisualizer:conduit", "도관"));
+        assertEquals("마법 부여대", KoreanEntry.correctDefaultLabel("interactionvisualizer:enchantment_table", "인챈트대"));
+        assertEquals("나만의 이름", KoreanEntry.correctDefaultLabel("interactionvisualizer:conduit", "나만의 이름"));
+        assertEquals("barrel", KoreanEntry.resolve("통"));
+    }
 }

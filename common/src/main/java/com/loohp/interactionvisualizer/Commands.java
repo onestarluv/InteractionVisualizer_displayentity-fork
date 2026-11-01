@@ -167,6 +167,16 @@ public class Commands implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] input) {
         List<String> tab = new LinkedList<>();
+        if (input.length >= 3 && (input[0].equals("토글") || input[0].equalsIgnoreCase("toggle"))
+                && sender.hasPermission("interactionvisualizer.toggle")) {
+            String previous = String.join(" ", java.util.Arrays.copyOfRange(input, 1, input.length - 1));
+            if (KoreanEntry.resolve(previous) == null) {
+                String prefix = previous + " " + input[input.length - 1];
+                CommandLanguage.ENTRIES.keySet().stream().filter(name -> name.startsWith(prefix))
+                        .forEach(name -> tab.add(name.substring(previous.length() + 1)));
+                if (!tab.isEmpty()) return tab;
+            }
+        }
         String[] args = CommandLanguage.normalize(input);
         java.util.Map<String, String> candidates = new java.util.LinkedHashMap<>();
         if (args.length <= 1) {

@@ -67,7 +67,7 @@ public class InteractionVisualizerAPI {
      * @return The user-friendly name of the entry, or the internal name, if not found.
      */
     public static String getUserFriendlyName(EntryKey entry) {
-        return InteractionVisualizer.plugin.getConfiguration().getString("Messages.EntryName." + entry.toString().toLowerCase(), entry.toString().toLowerCase());
+        return com.loohp.interactionvisualizer.KoreanEntry.correctDefaultLabel(entry.toString(), InteractionVisualizer.plugin.getConfiguration().getString("Messages.EntryName." + entry.toString().toLowerCase(), entry.toString().toLowerCase()));
     }
 
     /**

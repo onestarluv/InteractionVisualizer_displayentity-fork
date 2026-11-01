@@ -26,6 +26,21 @@ More information (screenshots, commands, permissions) about the plugin can be fo
 
 기존 설치에서 이름을 변경할 때는 서버를 종료한 뒤 plugins/InteractionVisualizer의 데이터를 plugins/kokonut_ineteraction으로 복사해야 개인 설정 DB와 기존 설정이 이어집니다.
 
+## 한국어 명칭 기준
+
+블록 이름은 [Mojang 공식 26.3 한국어 언어 파일](https://resources.download.minecraft.net/10/1024e120d7c35438d9d1f5bfee3906b29a867c1c)을 기준으로 표시합니다.
+
+| 기존 표기 | 수정한 표기 |
+| --- | --- |
+| 인챈트대 | 마법 부여대 |
+| 도관 | 전달체 |
+| 생성기 | 몬스터 생성기 |
+| 지도제작대 | 지도 제작대 |
+| 대장장이작업대 | 대장장이 작업대 |
+| 엔더상자 / 셜커상자 | 엔더 상자 / 셜커 상자 |
+
+`/시각효과 토글 마법 부여대 끄기`처럼 띄어쓴 공식 이름과 붙여쓴 이름을 모두 입력할 수 있습니다. 기존 `인챈트대`, `도관`, `생성기` 별칭도 인식합니다. 자동완성과 기본 안내에는 공식 명칭을 사용합니다.
+
 ## 데이터베이스 저장 경로
 
 SQLite 데이터베이스는 현재 플러그인 데이터 폴더인 `plugins/kokonut_ineteraction/database.db`에 저장됩니다. 신규 설치에서는 폴더와 DB를 자동으로 생성하며, 이전 이름의 `InteractionVisualizer` 폴더를 따로 만들 필요가 없습니다.
