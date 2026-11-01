@@ -20,9 +20,9 @@ class ToggleGuiTest {
 
     @Test void pageBoundariesReserveTheBottomRowForControls() {
         assertEquals(1, ToggleGui.pageCount(0));
-        assertEquals(1, ToggleGui.pageCount(45));
-        assertEquals(2, ToggleGui.pageCount(46));
-        assertEquals(2, ToggleGui.pageCount(90));
-        assertEquals(3, ToggleGui.pageCount(91));
+        assertEquals(1, ToggleGui.pageCount(36));
+        assertEquals(2, ToggleGui.pageCount(37));
+        assertEquals(2, ToggleGui.pageCount(72));
+        assertEquals(3, ToggleGui.pageCount(73));
     }
 }

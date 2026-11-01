@@ -23,7 +23,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 public final class ToggleGui implements Listener {
-    static final int PAGE_SIZE = 45;
+    static final int INVENTORY_SIZE = 45;
+    static final int PAGE_SIZE = INVENTORY_SIZE - 9;
 
     static int pageCount(int count) { return Math.max(1, (count + PAGE_SIZE - 1) / PAGE_SIZE); }
 
@@ -43,11 +44,11 @@ public final class ToggleGui implements Listener {
                     enabled ? "클릭하면 모든 효과를 끕니다." : "클릭하면 모든 효과를 켭니다."));
         }
         ItemStack filler = button(Material.GRAY_STAINED_GLASS_PANE, " ", false, "");
-        for (int slot = 45; slot < 54; slot++) session.inventory.setItem(slot, filler);
-        if (session.page > 0) session.inventory.setItem(45, button(Material.ARROW, "이전 페이지", false, "클릭하여 이전 페이지로 이동합니다."));
-        session.inventory.setItem(49, button(Material.LEVER, "전체 효과", Toggle.hasAnyEnabled(player, session.entries.toArray(new EntryKey[0])),
+        for (int slot = PAGE_SIZE; slot < INVENTORY_SIZE; slot++) session.inventory.setItem(slot, filler);
+        if (session.page > 0) session.inventory.setItem(PAGE_SIZE, button(Material.ARROW, "이전 페이지", false, "클릭하여 이전 페이지로 이동합니다."));
+        session.inventory.setItem(PAGE_SIZE + 4, button(Material.LEVER, "전체 효과", Toggle.hasAnyEnabled(player, session.entries.toArray(new EntryKey[0])),
                 "클릭하면 모든 항목을 함께 전환합니다.", "현재 페이지: " + (session.page + 1) + "/" + pageCount(session.entries.size())));
-        if (session.page + 1 < pageCount(session.entries.size())) session.inventory.setItem(53, button(Material.ARROW, "다음 페이지", false, "클릭하여 다음 페이지로 이동합니다."));
+        if (session.page + 1 < pageCount(session.entries.size())) session.inventory.setItem(INVENTORY_SIZE - 1, button(Material.ARROW, "다음 페이지", false, "클릭하여 다음 페이지로 이동합니다."));
     }
 
     private static ItemStack button(Material material, String name, boolean enabled, String... lines) {
@@ -88,10 +89,10 @@ public final class ToggleGui implements Listener {
         if (!player.hasPermission("interactionvisualizer.toggle")) { player.closeInventory(); return; }
         if (!event.getClick().isLeftClick() && !event.getClick().isRightClick()) return;
         int slot = event.getRawSlot();
-        if (slot < 0 || slot >= 54) return;
-        if (slot == 45 && session.page > 0) session.page--;
-        else if (slot == 53 && session.page + 1 < pageCount(session.entries.size())) session.page++;
-        else if (slot == 49 && !session.entries.isEmpty()) {
+        if (slot < 0 || slot >= INVENTORY_SIZE) return;
+        if (slot == PAGE_SIZE && session.page > 0) session.page--;
+        else if (slot == INVENTORY_SIZE - 1 && session.page + 1 < pageCount(session.entries.size())) session.page++;
+        else if (slot == PAGE_SIZE + 4 && !session.entries.isEmpty()) {
             Toggle.toggleAll(player, player, null, "전체", false, session.entries.toArray(new EntryKey[0]));
         } else if (slot < PAGE_SIZE && session.page * PAGE_SIZE + slot < session.entries.size()) {
             EntryKey entry = session.entries.get(session.page * PAGE_SIZE + slot);
@@ -104,7 +105,7 @@ public final class ToggleGui implements Listener {
     @EventHandler
     public void onDrag(InventoryDragEvent event) {
         if (event.getView().getTopInventory().getHolder() instanceof Session
-                && event.getRawSlots().stream().anyMatch(slot -> slot < 54)) event.setCancelled(true);
+                && event.getRawSlots().stream().anyMatch(slot -> slot < INVENTORY_SIZE)) event.setCancelled(true);
     }
 
     private static final class Session implements InventoryHolder {
@@ -115,7 +116,7 @@ public final class ToggleGui implements Listener {
         Session(UUID owner, List<EntryKey> entries) {
             this.owner = owner;
             this.entries = entries;
-            this.inventory = Bukkit.createInventory(this, 54, Component.text("시각 효과 설정"));
+            this.inventory = Bukkit.createInventory(this, INVENTORY_SIZE, Component.text("시각 효과 설정"));
         }
         @Override public Inventory getInventory() { return inventory; }
     }
