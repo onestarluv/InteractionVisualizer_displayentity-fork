@@ -63,6 +63,14 @@ public class Commands implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("gui")) {
+            if (!sender.hasPermission("interactionvisualizer.toggle")) sender.sendMessage(ChatColor.RED + "이 명령어를 사용할 권한이 없습니다.");
+            else if (!(sender instanceof Player player)) sender.sendMessage(ChatColor.RED + "게임 안에서만 설정 창을 열 수 있습니다.");
+            else if (args.length != 1) sender.sendMessage(ChatColor.RED + "사용법: /시각효과 gui");
+            else ToggleGui.open(player);
+            return true;
+        }
+
         if (args[0].equalsIgnoreCase("reload")) {
             if (sender.hasPermission("interactionvisualizer.reload")) {
                 plugin.loadConfig();
@@ -181,7 +189,7 @@ public class Commands implements CommandExecutor, TabCompleter {
         java.util.Map<String, String> candidates = new java.util.LinkedHashMap<>();
         if (args.length <= 1) {
             CommandLanguage.ACTIONS.forEach((ko, en) -> {
-                if (sender.hasPermission("interactionvisualizer." + en)) {
+                if (sender.hasPermission("interactionvisualizer." + (en.equals("gui") ? "toggle" : en))) {
                     candidates.put(ko, en);
                     candidates.put(en, en);
                 }
@@ -200,7 +208,7 @@ public class Commands implements CommandExecutor, TabCompleter {
         }
         String prefix = input.length == 0 ? "" : input[input.length - 1].toLowerCase(java.util.Locale.ROOT);
         candidates.keySet().stream()
-                .filter(value -> !prefix.isEmpty() || args.length >= 3 || value.codePoints().anyMatch(c -> c >= 0xAC00 && c <= 0xD7A3))
+                .filter(value -> !prefix.isEmpty() || value.equals("gui") || args.length >= 3 || value.codePoints().anyMatch(c -> c >= 0xAC00 && c <= 0xD7A3))
                 .filter(value -> value.toLowerCase(java.util.Locale.ROOT).startsWith(prefix)).forEach(tab::add);
         return tab;
     }

@@ -190,6 +190,7 @@ public class InteractionVisualizer extends JavaPlugin {
         MaterialManager.setup();
 
         getCommand("시각효과").setExecutor(new Commands());
+        getServer().getPluginManager().registerEvents(new ToggleGui(), this);
 
         TaskManager.run();
 

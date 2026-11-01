@@ -29,11 +29,24 @@ import org.bukkit.entity.Player;
 
 public class Toggle {
     public static boolean toggleAll(CommandSender sender, Player player, Boolean requested, String group, EntryKey... entries) {
+        return toggleAll(sender, player, requested, group, true, entries);
+    }
+
+    public static boolean hasAnyEnabled(Player player, EntryKey... entries) {
+        for (EntryKey entry : entries) {
+            for (Modules module : Modules.values()) {
+                if (InteractionVisualizer.preferenceManager.getPlayerPreference(player.getUniqueId(), module, entry)) return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean toggleAll(CommandSender sender, Player player, Boolean requested, String group, boolean verbose, EntryKey... entries) {
         boolean anyEnabled = false;
         for (EntryKey entry : entries) {
             if (!InteractionVisualizerAPI.isRegisteredEntry(entry)) return false;
             for (Modules module : Modules.values()) {
-                anyEnabled |= InteractionVisualizerAPI.hasPlayerEnabledModule(player, module, entry);
+                anyEnabled |= InteractionVisualizer.preferenceManager.getPlayerPreference(player.getUniqueId(), module, entry);
             }
         }
         boolean enabled = requested == null ? !anyEnabled : requested;
@@ -44,7 +57,7 @@ public class Toggle {
         }
         InteractionVisualizer.preferenceManager.updatePlayer(player, true);
         String message = plugin.getConfiguration().getString(enabled ? "Messages.Toggle.ToggleOn" : "Messages.Toggle.ToggleOff");
-        sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', message.replace("%e", group).replace("%m", "전체 효과")));
+        if (verbose) sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', message.replace("%e", group).replace("%m", "전체 효과")));
         return true;
     }
 
