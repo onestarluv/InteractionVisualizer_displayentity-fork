@@ -1,10 +1,12 @@
-name: InteractionVisualizer
-author: loohp
+name: kokonut_ineteraction
+author: onestarluv
+contributors: [LOOHP]
+website: https://github.com/onestarluv/InteractionVisualizer_displayentity-fork
 version: ${project.version}
 main: com.loohp.interactionvisualizer.InteractionVisualizer
-api-version: 1.13
+api-version: '26.3'
 folia-supported: true
-description: Makes function blocks better
+description: 블록 작업과 아이템을 시각 효과로 표시합니다.
 softdepend:
   - LightAPI
   - OpenInv
@@ -13,27 +15,27 @@ softdepend:
   - CMI
   - Essentials
   - PlaceholderAPI
-prefix: InteractionVisualizer
+prefix: kokonut_ineteraction
 
 commands:
-  interactionvisualizer:
+  시각효과:
     usage: /<command>
-    aliases: [iv]
-    description: Plugin main command
+    aliases: [iv, interactionvisualizer, 인터랙션비주얼라이저]
+    description: 개인별 시각 효과 설정 및 플러그인 관리
 
 permissions:
   interactionvisualizer.reload:
-    description: Allows you to reload the plugin
+    description: 플러그인 공통 설정을 다시 불러옵니다.
     default: op
   interactionvisualizer.refresh:
-    description: Allows you to refresh all display items
+    description: 본인 화면의 시각 효과를 새로고침합니다.
     default: true
   interactionvisualizer.toggle:
-    description: Allows you to toggle modules
+    description: 개인 시각 효과를 켜거나 끕니다.
     default: true
   interactionvisualizer.toggle.others:
-    description: Allows you to toggle modules for others
+    description: 다른 플레이어의 시각 효과 설정을 변경합니다.
     default: op
   interactionvisualizer.update:
-    description: Allows you receive update messages
+    description: 버전 확인 안내를 받습니다.
     default: op

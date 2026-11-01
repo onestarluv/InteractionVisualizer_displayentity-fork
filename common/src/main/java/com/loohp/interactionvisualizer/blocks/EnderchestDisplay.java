@@ -28,8 +28,6 @@ import com.loohp.interactionvisualizer.entityholders.Item;
 import com.loohp.interactionvisualizer.managers.PacketManager;
 import com.loohp.interactionvisualizer.objectholders.EntryKey;
 import com.loohp.interactionvisualizer.utils.InventoryUtils;
-import com.loohp.interactionvisualizer.utils.MCVersion;
-import com.loohp.interactionvisualizer.utils.MaterialUtils;
 import com.loohp.interactionvisualizer.utils.OpenInvUtils;
 import com.loohp.interactionvisualizer.utils.VanishUtils;
 import com.loohp.platformscheduler.Scheduler;
@@ -93,30 +91,16 @@ public class EnderchestDisplay implements Listener, VisualizerDisplay {
         if (!InventoryUtils.compareContents(event.getPlayer().getEnderChest(), event.getView().getTopInventory())) {
             return;
         }
-        if (InteractionVisualizer.version.isNewerThan(MCVersion.V1_13_1)) {
-            if (event.getPlayer().getTargetBlockExact(7, FluidCollisionMode.NEVER) != null) {
-                if (!event.getPlayer().getTargetBlockExact(7, FluidCollisionMode.NEVER).getType().equals(Material.ENDER_CHEST)) {
-                    return;
-                }
-            } else {
+        if (event.getPlayer().getTargetBlockExact(7, FluidCollisionMode.NEVER) != null) {
+            if (!event.getPlayer().getTargetBlockExact(7, FluidCollisionMode.NEVER).getType().equals(Material.ENDER_CHEST)) {
                 return;
             }
         } else {
-            if (event.getPlayer().getTargetBlock(MaterialUtils.getNonSolidSet(), 7) != null) {
-                if (!event.getPlayer().getTargetBlock(MaterialUtils.getNonSolidSet(), 7).getType().equals(Material.ENDER_CHEST)) {
-                    return;
-                }
-            } else {
-                return;
-            }
+            return;
         }
 
         Block block;
-        if (InteractionVisualizer.version.isNewerThan(MCVersion.V1_13_1)) {
-            block = event.getPlayer().getTargetBlockExact(7, FluidCollisionMode.NEVER);
-        } else {
-            block = event.getPlayer().getTargetBlock(MaterialUtils.getNonSolidSet(), 7);
-        }
+        block = event.getPlayer().getTargetBlockExact(7, FluidCollisionMode.NEVER);
 
         playermap.put((Player) event.getPlayer(), block);
     }

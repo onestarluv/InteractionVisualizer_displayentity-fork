@@ -43,10 +43,9 @@ import com.loohp.interactionvisualizer.updater.Updater;
 import com.loohp.interactionvisualizer.updater.Updater.UpdaterResponse;
 import com.loohp.interactionvisualizer.utils.MCVersion;
 import com.loohp.platformscheduler.Scheduler;
-import com.loohp.yamlconfiguration.YamlConfiguration;
+import com.loohp.interactionvisualizer.config.ServerSettings;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
@@ -73,6 +72,7 @@ public class InteractionVisualizer extends JavaPlugin {
 
     public static final int BSTATS_PLUGIN_ID = 7024;
     public static final String CONFIG_ID = "config";
+    private ServerSettings serverSettings = ServerSettings.INSTANCE;
 
     public static InteractionVisualizer plugin = null;
 
@@ -116,23 +116,11 @@ public class InteractionVisualizer extends JavaPlugin {
     public static AsyncExecutorManager asyncExecutorManager;
 
     private static void hookMessage(String pluginName) {
-        Bukkit.getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[InteractionVisualizer] InteractionVisualizer has hooked into " + pluginName + "!");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[kokonut_ineteraction] 연동한 플러그인: " + pluginName + "!");
     }
 
     public static void sendMessage(CommandSender sender, Component component) {
-        if (version.isLegacyRGB()) {
-            try {
-                sender.spigot().sendMessage(ComponentSerializer.parse(GsonComponentSerializer.colorDownsamplingGson().serialize(component)));
-            } catch (Throwable e) {
-                if (sender instanceof Player) {
-                    ((Player) sender).spigot().sendMessage(ComponentSerializer.parse(GsonComponentSerializer.colorDownsamplingGson().serialize(component)));
-                } else {
-                    sender.sendMessage(LegacyComponentSerializer.legacySection().serialize(component));
-                }
-            }
-        } else {
-            sender.spigot().sendMessage(ComponentSerializer.parse(GsonComponentSerializer.gson().serialize(component)));
-        }
+        sender.spigot().sendMessage(ComponentSerializer.parse(GsonComponentSerializer.gson().serialize(component)));
     }
 
     public static boolean isPluginEnabled(String name) {
@@ -150,7 +138,9 @@ public class InteractionVisualizer extends JavaPlugin {
         version = MCVersion.resolve();
 
         if (!version.isSupported()) {
-            getServer().getConsoleSender().sendMessage(org.bukkit.ChatColor.RED + "[InteractionVisualizer] This version of minecraft is unsupported! (" + version.toString() + ")");
+            getServer().getConsoleSender().sendMessage(org.bukkit.ChatColor.RED + "[kokonut_ineteraction] 마인크래프트 26.3만 지원합니다.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
         ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("InteractionVisualizer Async Processing Thread #%d").build();
@@ -167,9 +157,6 @@ public class InteractionVisualizer extends JavaPlugin {
             }
         }
         if (!lightapi) {
-            if (version.isOlderOrEqualTo(MCVersion.V1_16_4)) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[InteractionVisualizer] LightAPI (Fork) is recommended to be installed on servers with Minecraft version 1.16.5 or below!");
-            }
             lightManager = ILightManager.DUMMY_INSTANCE;
         }
         if (isPluginEnabled("OpenInv")) {
@@ -179,13 +166,6 @@ public class InteractionVisualizer extends JavaPlugin {
 
         if (!getDataFolder().exists()) {
             getDataFolder().mkdirs();
-        }
-        try {
-            Config.loadConfig(CONFIG_ID, new File(getDataFolder(), "config.yml"), getClass().getClassLoader().getResourceAsStream("config.yml"), getClass().getClassLoader().getResourceAsStream("config.yml"), true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            getServer().getPluginManager().disablePlugin(this);
-            return;
         }
         loadConfig();
 
@@ -203,7 +183,7 @@ public class InteractionVisualizer extends JavaPlugin {
 
         MaterialManager.setup();
 
-        getCommand("interactionvisualizer").setExecutor(new Commands());
+        getCommand("시각효과").setExecutor(new Commands());
 
         TaskManager.run();
 
@@ -222,7 +202,7 @@ public class InteractionVisualizer extends JavaPlugin {
         exemptBlocks.add("MOB_SPAWNER");
         exemptBlocks.add("BEACON");
         
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[InteractionVisualizer] InteractionVisualizer has been enabled!");
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[kokonut_ineteraction] 플러그인을 활성화했습니다.");
 
         Scheduler.runTask(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -247,10 +227,13 @@ public class InteractionVisualizer extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (version == null || !version.isSupported()) {
+            return;
+        }
         preferenceManager.close();
 
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
-            getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[InteractionVisualizer] Plugin reload detected, attempting to despawn all visual entities. If anything went wrong, please restart! (Reloads are always not recommended)");
+            getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[kokonut_ineteraction] 플러그인 리로드를 감지해 표시 엔티티를 제거합니다. 문제가 생기면 서버를 재시작하세요.");
             int[] entityIdArray = PacketManager.active.keySet().stream().mapToInt(each -> each.getEntityId()).toArray();
             Object[] packets = NMS.getInstance().createEntityDestroyPacket(entityIdArray);
 
@@ -262,16 +245,19 @@ public class InteractionVisualizer extends JavaPlugin {
         }
 
         asyncExecutorManager.close();
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[InteractionVisualizer] InteractionVisualizer has been disabled!");
+        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] 플러그인을 비활성화했습니다.");
     }
 
-    public YamlConfiguration getConfiguration() {
-        return Config.getConfig(CONFIG_ID).getConfiguration();
+    public ServerSettings getConfiguration() {
+        return serverSettings;
     }
 
     public void loadConfig() {
-        Config config = Config.getConfig(CONFIG_ID);
-        config.reload();
+        try {
+            serverSettings = ServerSettings.importLegacy(new File(getDataFolder(), "config.yml"));
+        } catch (IOException e) {
+            throw new IllegalStateException("기존 서버 설정을 읽을 수 없습니다. 기존 파일은 보존됩니다.", e);
+        }
 
         itemStandEnabled = getConfiguration().getBoolean("Modules.ItemStand.Enabled");
         itemDropEnabled = getConfiguration().getBoolean("Modules.ItemDrop.Enabled");

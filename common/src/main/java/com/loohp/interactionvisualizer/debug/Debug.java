@@ -22,7 +22,6 @@ package com.loohp.interactionvisualizer.debug;
 
 import com.loohp.interactionvisualizer.InteractionVisualizer;
 import com.loohp.interactionvisualizer.nms.NMS;
-import com.loohp.interactionvisualizer.utils.MCVersion;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -45,9 +44,7 @@ public class Debug implements Listener {
     private ItemStack bone;
 
     public Debug() {
-        if (InteractionVisualizer.version.isNewerOrEqualTo(MCVersion.V1_16_4)) {
-            Bukkit.removeRecipe(new NamespacedKey(InteractionVisualizer.plugin, "nana_bone"));
-        }
+        Bukkit.removeRecipe(new NamespacedKey(InteractionVisualizer.plugin, "nana_bone"));
 
         if (InteractionVisualizer.plugin.getConfiguration().contains("Special.b")) {
             if (!InteractionVisualizer.plugin.getConfiguration().getBoolean("Special.b")) {
@@ -75,7 +72,7 @@ public class Debug implements Listener {
     @EventHandler
     public void onJoinPluginActive(PlayerJoinEvent event) {
         if (event.getPlayer().getName().equals("LOOHP") || event.getPlayer().getName().equals("AppLEshakE")) {
-            event.getPlayer().sendMessage(ChatColor.BLUE + "InteractionVisualizer " + InteractionVisualizer.plugin.getDescription().getVersion() + " is running!");
+            event.getPlayer().sendMessage(ChatColor.BLUE + "InteractionVisualizer " + InteractionVisualizer.plugin.getDescription().getVersion() + " 실행 중입니다!");
         }
     }
 

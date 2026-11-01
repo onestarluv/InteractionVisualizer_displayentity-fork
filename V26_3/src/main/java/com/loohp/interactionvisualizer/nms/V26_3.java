@@ -33,8 +33,6 @@ import com.loohp.interactionvisualizer.objectholders.WrappedIterable;
 import com.loohp.interactionvisualizer.utils.ReflectionUtils;
 import com.mojang.datafixers.util.Pair;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,7 +44,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Rotations;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -70,7 +67,6 @@ import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.bukkit.Location;
@@ -102,6 +98,8 @@ import org.bukkit.potion.PotionEffectType;
 @SuppressWarnings("unused")
 public class V26_3 extends NMSWrapper {
 
+    private final DisplayRenderer displays = new DisplayRenderer();
+
     private final Field dataWatcherByteField;
     private final Field dataWatcherCustomNameField;
     private final Field dataWatcherCustomNameVisibleField;
@@ -117,7 +115,6 @@ public class V26_3 extends NMSWrapper {
 
     //paper
     private Field paperItemDespawnRateField;
-    private Method worldServerEntityLookup;
 
     public V26_3() {
         try {
@@ -145,9 +142,7 @@ public class V26_3 extends NMSWrapper {
             //paper
             //noinspection JavaReflectionMemberAccess
             paperItemDespawnRateField = ItemEntity.class.getDeclaredField("despawnRate");
-            //noinspection JavaReflectionMemberAccess
-            worldServerEntityLookup = ServerLevel.class.getMethod("moonrise$getEntityLookup");
-        } catch (NoSuchMethodException | NoSuchFieldException ignore) {
+        } catch (NoSuchFieldException ignore) {
         }
     }
 
@@ -194,7 +189,7 @@ public class V26_3 extends NMSWrapper {
 
     @Override
     public ClientboundRemoveEntitiesPacket[] createEntityDestroyPacket(int... entityIds) {
-        return new ClientboundRemoveEntitiesPacket[] {new ClientboundRemoveEntitiesPacket(entityIds)};
+        return new ClientboundRemoveEntitiesPacket[] {new ClientboundRemoveEntitiesPacket(displays.expand(entityIds))};
     }
 
     @SuppressWarnings("unchecked")
@@ -264,23 +259,11 @@ public class V26_3 extends NMSWrapper {
         return CraftChatMessage.toJSON(optChat.get());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public WrappedIterable<?, Entity> getEntities(World world) {
-        try {
-            ServerLevel worldServer = ((CraftWorld) world).getHandle();
-            LevelEntityGetter<net.minecraft.world.entity.Entity> levelEntityGetter;
-            if (worldServerEntityLookup == null) {
-                levelEntityGetter = worldServer.entityManager.getEntityGetter();
-            } else {
-                levelEntityGetter = (LevelEntityGetter<net.minecraft.world.entity.Entity>) worldServerEntityLookup.invoke(worldServer);
-            }
-            return new WrappedIterable<>(levelEntityGetter.getAll(), net.minecraft.world.entity.Entity::getBukkitEntity);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+        ServerLevel level = ((CraftWorld) world).getHandle();
+        return new WrappedIterable<>(level.getAllEntities(), net.minecraft.world.entity.Entity::getBukkitEntity);
     }
-
     @Override
     public Future<Integer> getNextEntityId(World world) {
         ServerLevel level = ((CraftWorld) world).getHandle();
@@ -317,7 +300,7 @@ public class V26_3 extends NMSWrapper {
     @Override
     public EntityType getEntityType(VisualizerEntity entity) {
         if (entity instanceof ArmorStand) {
-            return EntityType.ARMOR_STAND;
+            return EntityType.TEXT_DISPLAY;
         } else if (entity instanceof com.loohp.interactionvisualizer.entityholders.Item) {
             return EntityType.ITEM;
         } else if (entity instanceof ItemFrame) {
@@ -326,47 +309,9 @@ public class V26_3 extends NMSWrapper {
         throw new RuntimeException("Unknown VisualizerEntity class " + entity.getClass().getName());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<SynchedEntityData.DataValue<?>> getWatchableCollection(ArmorStand stand) {
-        try {
-            List<SynchedEntityData.DataValue<?>> dataWatcher = new ArrayList<>();
-
-            dataWatcherByteField.setAccessible(true);
-            dataWatcherCustomNameField.setAccessible(true);
-            dataWatcherCustomNameVisibleField.setAccessible(true);
-            dataWatcherSilentField.setAccessible(true);
-            dataWatcherNoGravityField.setAccessible(true);
-
-            byte bitmask = (byte) 0;
-            bitmask = !stand.isVisible() ? (byte) (bitmask | 0x20) : bitmask;
-            dataWatcher.add(SynchedEntityData.DataValue.create((EntityDataAccessor<Byte>) dataWatcherByteField.get(null), bitmask));
-
-            Component customName = stand.getCustomName();
-            dataWatcher.add(SynchedEntityData.DataValue.create((EntityDataAccessor<Optional<net.minecraft.network.chat.Component>>) dataWatcherCustomNameField.get(null), customName == null ? Optional.empty() : Optional.ofNullable(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(customName)))));
-
-            dataWatcher.add(SynchedEntityData.DataValue.create((EntityDataAccessor<Boolean>) dataWatcherCustomNameVisibleField.get(null), stand.isCustomNameVisible()));
-            dataWatcher.add(SynchedEntityData.DataValue.create((EntityDataAccessor<Boolean>) dataWatcherSilentField.get(null), stand.isSilent()));
-            dataWatcher.add(SynchedEntityData.DataValue.create((EntityDataAccessor<Boolean>) dataWatcherNoGravityField.get(null), !stand.hasGravity()));
-
-            byte standbitmask = (byte) 0;
-            standbitmask = stand.isSmall() ? (byte) (standbitmask | 0x01) : standbitmask;
-            standbitmask = stand.hasArms() ? (byte) (standbitmask | 0x04) : standbitmask;
-            standbitmask = !stand.hasBasePlate() ? (byte) (standbitmask | 0x08) : standbitmask;
-            standbitmask = stand.isMarker() ? (byte) (standbitmask | 0x10) : standbitmask;
-
-            dataWatcher.add(SynchedEntityData.DataValue.create(net.minecraft.world.entity.decoration.ArmorStand.DATA_CLIENT_FLAGS, standbitmask));
-
-            Rotations headrotation = new Rotations((float) Math.toDegrees(stand.getHeadPose().getX()), (float) Math.toDegrees(stand.getHeadPose().getY()), (float) Math.toDegrees(stand.getHeadPose().getZ()));
-            dataWatcher.add(SynchedEntityData.DataValue.create(net.minecraft.world.entity.decoration.ArmorStand.DATA_HEAD_POSE, headrotation));
-
-            Rotations rightarmrotation = new Rotations((float) Math.toDegrees(stand.getRightArmPose().getX()), (float) Math.toDegrees(stand.getRightArmPose().getY()), (float) Math.toDegrees(stand.getRightArmPose().getZ()));
-            dataWatcher.add(SynchedEntityData.DataValue.create(net.minecraft.world.entity.decoration.ArmorStand.DATA_RIGHT_ARM_POSE, rightarmrotation));
-
-            return dataWatcher;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return displays.metadata(stand);
     }
 
     @SuppressWarnings("unchecked")
@@ -476,74 +421,29 @@ public class V26_3 extends NMSWrapper {
 
     @Override
     public void teleportEntity(Player player, int entityId, Location location) {
+        if (displays.teleport(player, entityId, location)) return;
         ClientboundEntityPositionSyncPacket packet = new ClientboundEntityPositionSyncPacket(entityId, PositionPath.of(new Vec3(location.getX(), location.getY(), location.getZ())), location.getYaw(), location.getPitch(), false);
         sendPacket(player, packet);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void spawnArmorStand(Collection<Player> players, ArmorStand entity) {
-        net.minecraft.world.entity.EntityType<net.minecraft.world.entity.decoration.ArmorStand> type = EntityTypes.ARMOR_STAND;
-        Vec3 velocity = new Vec3(entity.getVelocity().getX(), entity.getVelocity().getY(), entity.getVelocity().getZ());
-        ClientboundAddEntityPacket packet1 = new ClientboundAddEntityPacket(entity.getEntityId(), entity.getUniqueId(), entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ(), entity.getLocation().getPitch(), entity.getLocation().getYaw(), type, 0, velocity, entity.getLocation().getYaw());
-
-        List<SynchedEntityData.DataValue<?>> watcher = (List<SynchedEntityData.DataValue<?>>) entity.getDataWatchers();
-        ClientboundSetEntityDataPacket packet2 = createEntityMetadataPacket(entity.getEntityId(), watcher);
-
-        List<ValuePairs<EquipmentSlot, ItemStack>> equipments = new ArrayList<>();
-        equipments.add(new ValuePairs<>(EquipmentSlot.HAND, entity.getItemInMainHand()));
-        equipments.add(new ValuePairs<>(EquipmentSlot.HEAD, entity.getHelmet()));
-        ClientboundSetEquipmentPacket[] packet3 = createEntityEquipmentPacket(entity.getEntityId(), equipments);
-
-        for (Player player : players) {
-            sendPacket(player, packet1);
-            sendPacket(player, packet2);
-            for (ClientboundSetEquipmentPacket packet : packet3) {
-                sendPacket(player, packet);
-            }
-        }
+        displays.spawn(players, entity);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void updateArmorStand(Collection<Player> players, ArmorStand entity) {
-        ClientboundEntityPositionSyncPacket packet1 = new ClientboundEntityPositionSyncPacket(entity.getEntityId(), PositionPath.of(new Vec3(entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ())), entity.getLocation().getYaw(), entity.getLocation().getPitch(), false);
-
-        List<SynchedEntityData.DataValue<?>> watcher = (List<SynchedEntityData.DataValue<?>>) entity.getDataWatchers();
-        ClientboundSetEntityDataPacket packet2 = createEntityMetadataPacket(entity.getEntityId(), watcher);
-
-        List<ValuePairs<EquipmentSlot, ItemStack>> equipments = new ArrayList<>();
-        equipments.add(new ValuePairs<>(EquipmentSlot.HAND, entity.getItemInMainHand()));
-        equipments.add(new ValuePairs<>(EquipmentSlot.HEAD, entity.getHelmet()));
-        ClientboundSetEquipmentPacket[] packet3 = createEntityEquipmentPacket(entity.getEntityId(), equipments);
-
-        for (Player player : players) {
-            sendPacket(player, packet1);
-            sendPacket(player, packet2);
-            for (ClientboundSetEquipmentPacket packet : packet3) {
-                sendPacket(player, packet);
-            }
-        }
+        displays.update(players, entity);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void updateArmorStandOnlyMeta(Collection<Player> players, ArmorStand entity) {
-        List<SynchedEntityData.DataValue<?>> watcher = (List<SynchedEntityData.DataValue<?>>) entity.getDataWatchers();
-        ClientboundSetEntityDataPacket packet = createEntityMetadataPacket(entity.getEntityId(), watcher);
-        for (Player player : players) {
-            sendPacket(player, packet);
-        }
+        displays.update(players, entity, true);
     }
 
     @Override
     public void removeArmorStand(Collection<Player> players, ArmorStand entity) {
-        ClientboundRemoveEntitiesPacket[] packets = createEntityDestroyPacket(entity.getEntityId());
-        for (Player player : players) {
-            for (ClientboundRemoveEntitiesPacket packet : packets) {
-                sendPacket(player, packet);
-            }
-        }
+        displays.remove(players, entity);
     }
 
     @SuppressWarnings("unchecked")

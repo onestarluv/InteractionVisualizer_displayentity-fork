@@ -35,7 +35,6 @@ import com.loohp.interactionvisualizer.objectholders.EntryKey;
 import com.loohp.interactionvisualizer.objectholders.TileEntity.TileEntityType;
 import com.loohp.interactionvisualizer.utils.ChatColorUtils;
 import com.loohp.interactionvisualizer.utils.InventoryUtils;
-import com.loohp.interactionvisualizer.utils.MCVersion;
 import com.loohp.interactionvisualizer.utils.VanishUtils;
 import com.loohp.platformscheduler.ScheduledTask;
 import com.loohp.platformscheduler.Scheduler;
@@ -238,9 +237,7 @@ public class SmokerDisplay extends VisualizerRunnableDisplay implements Listener
                         if (hasItemToCook(smoker)) {
                             int time = smoker.getCookTime();
                             int max = 10 * 20;
-                            if (InteractionVisualizer.version.isNewerThan(MCVersion.V1_13_1)) {
-                                max = smoker.getCookTimeTotal();
-                            }
+                            max = smoker.getCookTimeTotal();
                             String symbol = "";
                             double percentagescaled = (double) time / (double) max * (double) progressBarLength;
                             double i = 1;

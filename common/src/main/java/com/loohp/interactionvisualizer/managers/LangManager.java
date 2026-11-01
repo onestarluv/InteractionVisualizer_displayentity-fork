@@ -49,12 +49,12 @@ public class LangManager {
             removeFolder(TempFolder);
 
             //https://github.com/LOOHP/InteractionVisualizerLanguages/archive/master.zip
-            Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "[InteractionVisualizer] Downloading and extracting latest Language files...");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "[kokonut_ineteraction] 최신 언어 파일을 다운로드하고 압축을 푸는 중입니다.");
             TempFolder.mkdirs();
 
             File zip = downloadFile(new File(TempFolder, "Lang.zip"), new URL("https://github.com/LOOHP/InteractionVisualizerLanguages/archive/master.zip"));
             if (zip == null) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Failed to connect to github. Could be an internet issue.");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "GitHub에 연결할 수 없습니다. 네트워크 연결을 확인하세요.");
                 try {
                     removeFolder(TempFolder);
                 } catch (Exception e) {
@@ -69,7 +69,7 @@ public class LangManager {
 
             removeFolder(TempFolder);
 
-            Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "[InteractionVisualizer] Sucessfully downloaded the latest Language files!");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "[kokonut_ineteraction] 최신 언어 파일을 다운로드했습니다.");
         } catch (Exception e) {
             e.printStackTrace();
         }

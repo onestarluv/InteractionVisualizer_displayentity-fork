@@ -101,13 +101,13 @@ public class Database {
             setConnection(DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password));
 
             if (echo == true) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[InteractionVisualizer] MYSQL CONNECTED");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[kokonut_ineteraction] MySQL 데이터베이스에 연결했습니다.");
             }
         } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[InteractionVisualizer] MYSQL Failed to connect! (SQLException)");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] MySQL 연결에 실패했습니다. (SQLException)");
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[InteractionVisualizer] MYSQL Failed to connect! (ClassNotFoundException)");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] MySQL 드라이버를 찾을 수 없습니다. (ClassNotFoundException)");
             e.printStackTrace();
         }
     }
@@ -117,7 +117,7 @@ public class Database {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:plugins/InteractionVisualizer/database.db");
             if (echo) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[InteractionVisualizer] Opened Sqlite database successfully");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[kokonut_ineteraction] SQLite 데이터베이스를 열었습니다.");
             }
 
             Statement stmt0 = connection.createStatement();
@@ -135,7 +135,7 @@ public class Database {
             stmt2.executeUpdate(sql2);
             stmt2.close();
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[InteractionVisualizer] Unable to connect to sqlite database!!!");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] SQLite 데이터베이스에 연결할 수 없습니다.");
             e.printStackTrace();
             InteractionVisualizer.plugin.getPluginLoader().disablePlugin(InteractionVisualizer.plugin);
         }

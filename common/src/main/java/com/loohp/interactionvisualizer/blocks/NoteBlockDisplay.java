@@ -29,7 +29,6 @@ import com.loohp.interactionvisualizer.managers.MusicManager;
 import com.loohp.interactionvisualizer.managers.PacketManager;
 import com.loohp.interactionvisualizer.objectholders.EntryKey;
 import com.loohp.interactionvisualizer.utils.ItemNameUtils;
-import com.loohp.interactionvisualizer.utils.MCVersion;
 import com.loohp.platformscheduler.ScheduledTask;
 import com.loohp.platformscheduler.Scheduler;
 import net.kyori.adventure.text.Component;
@@ -128,7 +127,7 @@ public class NoteBlockDisplay extends VisualizerRunnableDisplay implements Liste
             Block topBlock = block.getRelative(BlockFace.UP);
             Collection<ItemStack> topBlockDrops;
             Component component;
-            if (InteractionVisualizer.version.isNewerThan(MCVersion.V1_19) && isHead(topBlock) && !(topBlockDrops = topBlock.getDrops()).isEmpty()) {
+            if (isHead(topBlock) && !(topBlockDrops = topBlock.getDrops()).isEmpty()) {
                 ItemStack skull = topBlockDrops.iterator().next();
                 component = ItemNameUtils.getDisplayName(skull);
             } else {

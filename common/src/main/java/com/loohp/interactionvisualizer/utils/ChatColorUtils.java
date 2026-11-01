@@ -71,7 +71,7 @@ public class ChatColorUtils {
     }
 
     public static String filterIllegalColorCodes(String string) {
-        return InteractionVisualizer.version.isNewerOrEqualTo(MCVersion.V1_16) ? string.replaceAll("\u00a7[^0-9A-Fa-fk-orx]", "") : string.replaceAll("\u00a7[^0-9a-fk-or]", "");
+        return string.replaceAll("\u00a7[^0-9A-Fa-fk-orx]", "");
     }
 
     public static String getLastColors(String input) {
@@ -247,9 +247,7 @@ public class ChatColorUtils {
             return text;
         }
 
-        if (InteractionVisualizer.version.isNewerOrEqualTo(MCVersion.V1_16)) {
-            text = translatePluginColorFormatting(text);
-        }
+        text = translatePluginColorFormatting(text);
 
         for (int i = 0; i < text.length() - 1; i++) {
             if (text.charAt(i) == code) {

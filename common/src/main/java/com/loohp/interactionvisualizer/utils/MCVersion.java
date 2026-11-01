@@ -29,51 +29,9 @@ import java.util.regex.Pattern;
 public enum MCVersion {
 
     V26_3("26.3", 42),
-    V26_2("26.2", 41),
-    V26_1_2("26.1.2", 40),
-    V26_1_1("26.1.1", 39),
-    V26_1("26.1", 38),
-    V1_21_11("1.21.11", "1_21_R7", 37),
-    V1_21_10("1.21.10", "1_21_R6", 36),
-    V1_21_9("1.21.9", "1_21_R6", 35),
-    V1_21_8("1.21.8", "1_21_R5", 34),
-    V1_21_7("1.21.7", "1_21_R5", 33),
-    V1_21_6("1.21.6", "1_21_R5", 32),
-    V1_21_5("1.21.5", "1_21_R4", 31),
-    V1_21_4("1.21.4", "1_21_R3", 30),
-    V1_21_3("1.21.3", "1_21_R2", 29),
-    V1_21_2("1.21.2", "1_21_R2", 28),
-    V1_21_1("1.21.1", "1_21_R1", 27),
-    V1_21("1.21", "1_21_R1", 26),
-    V1_20_6("1.20.6", "1_20_R4", 25),
-    V1_20_5("1.20.5", "1_20_R4", 24),
-    V1_20_3("1.20.3", "1_20_R3", 23),
-    V1_20_2("1.20.2", "1_20_R2", 22),
-    V1_20("1.20", "1_20_R1", 21),
-    V1_19_4("1.19.4", "1_19_R3", 20),
-    V1_19_3("1.19.3", "1_19_R2", 19),
-    V1_19("1.19", "1_19_R1", 18),
-    V1_18_2("1.18.2", "1_18_R2", 17),
-    V1_18("1.18", "1_18_R1", 16),
-    V1_17("1.17", "1_17_R1", 15),
-    V1_16_4("1.16.4", "1_16_R3", 14),
-    V1_16_2("1.16.2", "1_16_R2", 13),
-    V1_16("1.16", "1_16_R1", 12),
-    V1_15("1.15", "1_15_R1", 11),
-    V1_14("1.14", "1_14_R1", 10),
-    V1_13_1("1.13.1", "1_13_R2", 9),
-    V1_13("1.13", "1_13_R1", 8),
-    V1_12("1.12", "1_12_R1", 7),
-    V1_11("1.11", "1_11_R1", 6),
-    V1_10("1.10", "1_10_R1", 5),
-    V1_9_4("1.9.4", "1_9_R2", 4),
-    V1_9("1.9", "1_9_R1", 3),
-    V1_8_4("1.8.4", "1_8_R3", 2),
-    V1_8_3("1.8.3", "1_8_R2", 1),
-    V1_8("1.8", "1_8_R1", 0),
     UNSUPPORTED("Unsupported", null, -1);
 
-    public static final MCVersion MINIMUM_SUPPORTED_VERSION = V1_13;
+    public static final MCVersion MINIMUM_SUPPORTED_VERSION = V26_3;
 
     private static final MCVersion[] SUPPORTED_VALUES = Arrays.stream(values()).filter(v -> v.isSupported()).toArray(MCVersion[]::new);
 
@@ -184,11 +142,11 @@ public enum MCVersion {
     }
 
     public boolean isLegacy() {
-        return isOlderOrEqualTo(V1_12);
+        return false;
     }
 
     public boolean isOld() {
-        return isOlderOrEqualTo(V1_8_4);
+        return false;
     }
 
     public boolean isSupported() {
@@ -196,7 +154,7 @@ public enum MCVersion {
     }
 
     public boolean isLegacyRGB() {
-        return isOlderThan(V1_16);
+        return false;
     }
 
 }

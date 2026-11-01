@@ -50,14 +50,15 @@ public class Commands implements CommandExecutor, TabCompleter {
     private static final InteractionVisualizer plugin = InteractionVisualizer.plugin;
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!label.equalsIgnoreCase("interactionvisualizer") && !label.equalsIgnoreCase("iv")) {
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] input) {
+        final String[] args = CommandLanguage.normalize(input);
+        if (!cmd.getName().equalsIgnoreCase("시각효과")) {
             return true;
         }
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.AQUA + "[InteractionVisualizer] InteractionVisualizer written by LOOHP!");
-            sender.sendMessage(ChatColor.GOLD + "[InteractionVisualizer] Running InteractionVisualizer version: " + plugin.getDescription().getVersion());
+            sender.sendMessage(ChatColor.AQUA + "[kokonut_ineteraction] InteractionVisualizer 포크 관리자: onestarluv (원작: LOOHP)");
+            sender.sendMessage(ChatColor.GOLD + "[kokonut_ineteraction] 실행 중인 버전: " + plugin.getDescription().getVersion());
             return true;
         }
 
@@ -89,13 +90,13 @@ public class Commands implements CommandExecutor, TabCompleter {
 
         if (args[0].equalsIgnoreCase("update")) {
             if (sender.hasPermission("interactionvisualizer.update")) {
-                sender.sendMessage(ChatColor.AQUA + "[InteractionVisualizer] InteractionVisualizer written by LOOHP!");
-                sender.sendMessage(ChatColor.GOLD + "[InteractionVisualizer] You are running InteractionVisualizer version: " + plugin.getDescription().getVersion());
+                sender.sendMessage(ChatColor.AQUA + "[kokonut_ineteraction] InteractionVisualizer 포크 관리자: onestarluv (원작: LOOHP)");
+                sender.sendMessage(ChatColor.GOLD + "[kokonut_ineteraction] 실행 중인 버전: " + plugin.getDescription().getVersion());
                 InteractionVisualizer.asyncExecutorManager.runTaskAsynchronously(() -> {
                     UpdaterResponse version = Updater.checkUpdate();
                     if (version.getResult().equals("latest")) {
                         if (version.isDevBuildLatest()) {
-                            sender.sendMessage(ChatColor.GREEN + "[InteractionVisualizer] You are running the latest version!");
+                            sender.sendMessage(ChatColor.GREEN + "[kokonut_ineteraction] 최신 버전을 사용 중입니다!");
                         } else {
                             Updater.sendUpdateMessage(sender, version.getResult(), version.getSpigotPluginId(), true);
                         }
@@ -245,7 +246,7 @@ public class Commands implements CommandExecutor, TabCompleter {
         }
 
         if (args[0].equalsIgnoreCase("ethereal")) {
-            Component text = Component.text("She is Imaginary~~");
+            Component text = Component.text("그녀는 상상 속에 있어요~~");
             text = text.color(NamedTextColor.YELLOW);
             Component bone = LegacyComponentSerializer.legacySection().deserialize("\u00a7eNana's Bone\n\u00a77Lost \u00a76In-\u00a7dMaginary~~");
             text = text.hoverEvent(HoverEvent.showText(bone)).clickEvent(ClickEvent.openUrl("https://www.instagram.com/narliar/"));
@@ -253,120 +254,38 @@ public class Commands implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', Bukkit.spigot().getConfig().getString("messages.unknown-command")));
+        sender.sendMessage(ChatColor.RED + "알 수 없는 명령어입니다. /시각효과 토글 <종류> <블록/전체> [켜기/끄기]를 사용하세요.");
         return true;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] input) {
         List<String> tab = new LinkedList<>();
-        if (!label.equalsIgnoreCase("interactionvisualizer") && !label.equalsIgnoreCase("iv")) {
-            return tab;
+        String[] args = CommandLanguage.normalize(input);
+        java.util.Map<String, String> candidates = new java.util.LinkedHashMap<>();
+        if (args.length <= 1) {
+            CommandLanguage.ACTIONS.forEach((ko, en) -> {
+                if (sender.hasPermission("interactionvisualizer." + en)) {
+                    candidates.put(ko, en);
+                    candidates.put(en, en);
+                }
+            });
+        } else if (args[0].equalsIgnoreCase("toggle") && sender.hasPermission("interactionvisualizer.toggle")) {
+            if (args.length == 2) candidates.putAll(CommandLanguage.MODULES);
+            if (args.length == 3) {
+                candidates.putAll(CommandLanguage.ENTRIES);
+                InteractionVisualizer.preferenceManager.getRegisteredEntries().forEach(entry -> candidates.put(entry.toString(), entry.toString()));
+            }
+            if (args.length == 4) candidates.putAll(CommandLanguage.VALUES);
+            if (args.length == 5 && sender.hasPermission("interactionvisualizer.toggle.others")) {
+                Bukkit.getOnlinePlayers().forEach(player -> candidates.put(player.getName(), player.getName()));
+            }
+            new java.util.ArrayList<>(candidates.values()).forEach(value -> candidates.put(value, value));
         }
-
-        switch (args.length) {
-            case 0:
-                if (sender.hasPermission("interactionvisualizer.reload")) {
-                    tab.add("reload");
-                }
-                if (sender.hasPermission("interactionvisualizer.update")) {
-                    tab.add("update");
-                }
-                if (sender.hasPermission("interactionvisualizer.toggle")) {
-                    tab.add("toggle");
-                }
-                if (sender.hasPermission("interactionvisualizer.refresh")) {
-                    tab.add("refresh");
-                }
-                return tab;
-            case 1:
-                if (sender.hasPermission("interactionvisualizer.reload")) {
-                    if ("reload".startsWith(args[0].toLowerCase())) {
-                        tab.add("reload");
-                    }
-                }
-                if (sender.hasPermission("interactionvisualizer.update")) {
-                    if ("update".startsWith(args[0].toLowerCase())) {
-                        tab.add("update");
-                    }
-                }
-                if (sender.hasPermission("interactionvisualizer.toggle")) {
-                    if ("toggle".startsWith(args[0].toLowerCase())) {
-                        tab.add("toggle");
-                    }
-                }
-                if (sender.hasPermission("interactionvisualizer.refresh")) {
-                    if ("refresh".startsWith(args[0].toLowerCase())) {
-                        tab.add("refresh");
-                    }
-                }
-                return tab;
-            case 2:
-                if (args[0].equalsIgnoreCase("toggle")) {
-                    if (sender.hasPermission("interactionvisualizer.toggle")) {
-                        if ("itemstand".startsWith(args[1].toLowerCase())) {
-                            tab.add("itemstand");
-                        }
-                        if ("itemdrop".startsWith(args[1].toLowerCase())) {
-                            tab.add("itemdrop");
-                        }
-                        if ("hologram".startsWith(args[1].toLowerCase())) {
-                            tab.add("hologram");
-                        }
-                        if ("all".startsWith(args[1].toLowerCase())) {
-                            tab.add("all");
-                        }
-                    }
-                }
-                return tab;
-            case 3:
-                if (args[0].equalsIgnoreCase("toggle")) {
-                    if (sender.hasPermission("interactionvisualizer.toggle")) {
-                        if (args[1].equalsIgnoreCase("itemstand") || args[1].equalsIgnoreCase("itemdrop") || args[1].equalsIgnoreCase("hologram") || args[1].equalsIgnoreCase("all")) {
-                            for (EntryKey each : InteractionVisualizer.preferenceManager.getRegisteredEntries()) {
-                                if (each.toSimpleString().toLowerCase().startsWith(args[2].toLowerCase())) {
-                                    tab.add(each.toSimpleString());
-                                }
-                            }
-                            if ("all".startsWith(args[2].toLowerCase())) {
-                                tab.add("all");
-                            }
-                        }
-                    }
-                }
-                return tab;
-            case 4:
-                if (args[0].equalsIgnoreCase("toggle")) {
-                    if (sender.hasPermission("interactionvisualizer.toggle")) {
-                        if (args[1].equalsIgnoreCase("itemstand") || args[1].equalsIgnoreCase("itemdrop") || args[1].equalsIgnoreCase("hologram") || args[1].equalsIgnoreCase("all")) {
-                            if (Boolean.TRUE.toString().toLowerCase().startsWith(args[3].toLowerCase())) {
-                                tab.add(Boolean.TRUE.toString());
-                            }
-                            if (Boolean.FALSE.toString().toLowerCase().startsWith(args[3].toLowerCase())) {
-                                tab.add(Boolean.FALSE.toString());
-                            }
-                        }
-                    }
-                }
-                return tab;
-            case 5:
-                if (args[0].equalsIgnoreCase("toggle")) {
-                    if (sender.hasPermission("interactionvisualizer.toggle")) {
-                        if (args[1].equalsIgnoreCase("itemstand") || args[1].equalsIgnoreCase("itemdrop") || args[1].equalsIgnoreCase("hologram")) {
-                            if (sender.hasPermission("interactionvisualizer.toggle.others")) {
-                                for (Player each : Bukkit.getOnlinePlayers()) {
-                                    if (each.getName().toLowerCase().startsWith(args[4].toLowerCase())) {
-                                        tab.add(each.getName());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                return tab;
-            default:
-                return tab;
-        }
+        String prefix = input.length == 0 ? "" : input[input.length - 1].toLowerCase(java.util.Locale.ROOT);
+        candidates.keySet().stream()
+                .filter(value -> !prefix.isEmpty() || args.length == 5 || value.codePoints().anyMatch(c -> c >= 0xAC00 && c <= 0xD7A3))
+                .filter(value -> value.toLowerCase(java.util.Locale.ROOT).startsWith(prefix)).forEach(tab::add);
+        return tab;
     }
-
 }

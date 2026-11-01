@@ -31,7 +31,6 @@ import com.loohp.interactionvisualizer.managers.SoundManager;
 import com.loohp.interactionvisualizer.objectholders.EntryKey;
 import com.loohp.interactionvisualizer.objectholders.LightType;
 import com.loohp.interactionvisualizer.utils.InventoryUtils;
-import com.loohp.interactionvisualizer.utils.MCVersion;
 import com.loohp.interactionvisualizer.utils.MaterialUtils;
 import com.loohp.interactionvisualizer.utils.MaterialUtils.MaterialMode;
 import com.loohp.interactionvisualizer.utils.VanishUtils;
@@ -55,11 +54,9 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
@@ -105,16 +102,8 @@ public class CraftingTableDisplay extends VisualizerInteractDisplay implements L
                             if (!GameMode.SPECTATOR.equals(player.getGameMode())) {
                                 if (player.getOpenInventory() != null) {
                                     if (player.getOpenInventory().getTopInventory() != null) {
-                                        if (!InteractionVisualizer.version.equals(MCVersion.V1_13) && !InteractionVisualizer.version.equals(MCVersion.V1_13_1)) {
-                                            if (player.getOpenInventory().getTopInventory().getLocation().getBlock().getType().toString().equalsIgnoreCase("CRAFTING_TABLE")) {
-                                                return;
-                                            }
-                                        } else {
-                                            if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory) {
-                                                if (((CraftingInventory) player.getOpenInventory().getTopInventory()).getMatrix().length == 9) {
-                                                    return;
-                                                }
-                                            }
+                                        if (player.getOpenInventory().getTopInventory().getLocation().getBlock().getType().toString().equalsIgnoreCase("CRAFTING_TABLE")) {
+                                            return;
                                         }
                                     }
                                 }
@@ -156,28 +145,12 @@ public class CraftingTableDisplay extends VisualizerInteractDisplay implements L
             if (player.getOpenInventory().getTopInventory().getLocation().getBlock() == null) {
                 return;
             }
-            if (!InteractionVisualizer.version.equals(MCVersion.V1_13) && !InteractionVisualizer.version.equals(MCVersion.V1_13_1)) {
-                if (!player.getOpenInventory().getTopInventory().getLocation().getBlock().getType().toString().equalsIgnoreCase("CRAFTING_TABLE")) {
-                    return;
-                }
-            } else {
-                if (!(player.getOpenInventory().getTopInventory() instanceof CraftingInventory)) {
-                    return;
-                }
-                if (((CraftingInventory) player.getOpenInventory().getTopInventory()).getMatrix().length != 9) {
-                    return;
-                }
-                if (!player.getTargetBlock(MaterialUtils.getNonSolidSet(), 7).getType().toString().equalsIgnoreCase("CRAFTING_TABLE")) {
-                    return;
-                }
+            if (!player.getOpenInventory().getTopInventory().getLocation().getBlock().getType().toString().equalsIgnoreCase("CRAFTING_TABLE")) {
+                return;
             }
             Block block;
             InventoryView view = player.getOpenInventory();
-            if (InteractionVisualizer.version.isNewerThan(MCVersion.V1_13_1)) {
-                block = view.getTopInventory().getLocation().getBlock();
-            } else {
-                block = player.getTargetBlock(MaterialUtils.getNonSolidSet(), 7);
-            }
+            block = view.getTopInventory().getLocation().getBlock();
             playermap.put(player, block);
         }
 

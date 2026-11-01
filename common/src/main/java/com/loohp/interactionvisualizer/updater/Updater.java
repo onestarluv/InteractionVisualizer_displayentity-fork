@@ -49,25 +49,25 @@ public class Updater implements Listener {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 if (!devbuild) {
-                    player.sendMessage(ChatColor.YELLOW + "[InteractionVisualizer] A new version is available on SpigotMC: " + version);
+                    player.sendMessage(ChatColor.YELLOW + "[kokonut_ineteraction] 원본 프로젝트의 새 버전이 있습니다: " + version);
                     Component url = LegacyComponentSerializer.legacySection().deserialize(ChatColor.GOLD + "https://www.spigotmc.org/resources/" + spigotPluginId);
-                    url = url.hoverEvent(HoverEvent.showText(Component.text("Click me!").color(NamedTextColor.AQUA)));
+                    url = url.hoverEvent(HoverEvent.showText(Component.text("눌러서 다운로드 페이지 열기").color(NamedTextColor.AQUA)));
                     url = url.clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/" + spigotPluginId));
                     InteractionVisualizer.sendMessage(player, url);
                 } else {
-                    sender.sendMessage(ChatColor.GREEN + "[InteractionVisualizer] You are running the latest release!");
-                    Component url = LegacyComponentSerializer.legacySection().deserialize(ChatColor.YELLOW + "[InteractionVisualizer] However, a new Development Build is available if you want to try that!");
-                    url = url.hoverEvent(HoverEvent.showText(Component.text("Click me!").color(NamedTextColor.AQUA)));
+                    sender.sendMessage(ChatColor.GREEN + "[kokonut_ineteraction] 원본 프로젝트의 최신 릴리스 버전입니다.");
+                    Component url = LegacyComponentSerializer.legacySection().deserialize(ChatColor.YELLOW + "[kokonut_ineteraction] 원본 프로젝트의 새 개발 빌드가 있습니다.");
+                    url = url.hoverEvent(HoverEvent.showText(Component.text("눌러서 다운로드 페이지 열기").color(NamedTextColor.AQUA)));
                     url = url.clickEvent(ClickEvent.openUrl("https://ci.loohpjames.com/job/" + PLUGIN_NAME));
                     InteractionVisualizer.sendMessage(player, url);
                 }
             } else {
                 if (!devbuild) {
-                    sender.sendMessage(ChatColor.YELLOW + "[InteractionVisualizer] A new version is available on SpigotMC: " + version);
-                    sender.sendMessage(ChatColor.GOLD + "Download: https://www.spigotmc.org/resources/" + spigotPluginId);
+                    sender.sendMessage(ChatColor.YELLOW + "[kokonut_ineteraction] 원본 프로젝트의 새 버전이 있습니다: " + version);
+                    sender.sendMessage(ChatColor.GOLD + "다운로드: https://www.spigotmc.org/resources/" + spigotPluginId);
                 } else {
-                    sender.sendMessage(ChatColor.GREEN + "[InteractionVisualizer] You are running the latest release!");
-                    sender.sendMessage(ChatColor.YELLOW + "[InteractionVisualizer] However, a new Development Build is available if you want to try that!");
+                    sender.sendMessage(ChatColor.GREEN + "[kokonut_ineteraction] 원본 프로젝트의 최신 릴리스 버전입니다.");
+                    sender.sendMessage(ChatColor.YELLOW + "[kokonut_ineteraction] 원본 프로젝트의 새 개발 빌드가 있습니다.");
                 }
             }
         }
@@ -91,7 +91,7 @@ public class Updater implements Listener {
                 return new UpdaterResponse("latest", spigotPluginId, currentDevBuild.compareTo(devBuild) >= 0);
             }
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[InteractionVisualizer] Failed to check against \"api.loohpjames.com\" for the latest version.. It could be an internet issue or \"api.loohpjames.com\" is down. If you want disable the update checker, you can disable in config.yml, but we still highly-recommend you to keep your plugin up to date!");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] 원본 프로젝트의 버전 확인 서버에 연결할 수 없습니다. 네트워크와 서버 상태를 확인하세요.");
         }
         return new UpdaterResponse("error", -1, false);
     }

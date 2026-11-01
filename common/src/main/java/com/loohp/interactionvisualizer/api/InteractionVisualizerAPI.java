@@ -58,7 +58,7 @@ public class InteractionVisualizerAPI {
      * @return The user-friendly name of the module, or the internal name, if not found.
      */
     public static String getUserFriendlyName(Modules module) {
-        return Config.getConfig(InteractionVisualizer.CONFIG_ID).getConfiguration().getString("Messages.ModuleName." + module.toString().toLowerCase(), module.toString().toLowerCase());
+        return InteractionVisualizer.plugin.getConfiguration().getString("Messages.ModuleName." + module.toString().toLowerCase(), module.toString().toLowerCase());
     }
 
     /**
@@ -67,7 +67,7 @@ public class InteractionVisualizerAPI {
      * @return The user-friendly name of the entry, or the internal name, if not found.
      */
     public static String getUserFriendlyName(EntryKey entry) {
-        return Config.getConfig(InteractionVisualizer.CONFIG_ID).getConfiguration().getString("Messages.EntryName." + entry.toString().toLowerCase(), entry.toString().toLowerCase());
+        return InteractionVisualizer.plugin.getConfiguration().getString("Messages.EntryName." + entry.toString().toLowerCase(), entry.toString().toLowerCase());
     }
 
     /**

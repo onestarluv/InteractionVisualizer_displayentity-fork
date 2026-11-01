@@ -28,13 +28,11 @@ import com.loohp.interactionvisualizer.entityholders.Item;
 import com.loohp.interactionvisualizer.managers.PacketManager;
 import com.loohp.interactionvisualizer.objectholders.EntryKey;
 import com.loohp.interactionvisualizer.utils.InventoryUtils;
-import com.loohp.interactionvisualizer.utils.MCVersion;
 import com.loohp.interactionvisualizer.utils.VanishUtils;
 import com.loohp.platformscheduler.Scheduler;
 import org.bukkit.Material;
 import org.bukkit.entity.NPC;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -109,14 +107,8 @@ public class VillagerDisplay implements Listener, VisualizerDisplay {
         ItemStack item2 = event.getCurrentItem().clone();
         Player player = (Player) event.getWhoClicked();
         MerchantInventory tradeinv = (MerchantInventory) event.getView().getTopInventory();
-        if (InteractionVisualizer.version.isNewerOrEqualTo(MCVersion.V1_14)) {
-            if (!(tradeinv.getHolder() instanceof org.bukkit.entity.AbstractVillager)) {
-                return;
-            }
-        } else {
-            if (!(tradeinv.getHolder() instanceof Villager)) {
-                return;
-            }
+        if (!(tradeinv.getHolder() instanceof org.bukkit.entity.AbstractVillager)) {
+            return;
         }
         NPC villager = (NPC) tradeinv.getHolder();
         Vector lift = new Vector(0.0, 0.20, 0.0);

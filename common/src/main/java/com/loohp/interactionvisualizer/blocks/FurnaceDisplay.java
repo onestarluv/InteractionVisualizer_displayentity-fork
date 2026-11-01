@@ -36,7 +36,6 @@ import com.loohp.interactionvisualizer.objectholders.EntryKey;
 import com.loohp.interactionvisualizer.objectholders.TileEntity.TileEntityType;
 import com.loohp.interactionvisualizer.utils.ChatColorUtils;
 import com.loohp.interactionvisualizer.utils.InventoryUtils;
-import com.loohp.interactionvisualizer.utils.MCVersion;
 import com.loohp.interactionvisualizer.utils.VanishUtils;
 import com.loohp.platformscheduler.ScheduledTask;
 import com.loohp.platformscheduler.Scheduler;
@@ -239,9 +238,7 @@ public class FurnaceDisplay extends VisualizerRunnableDisplay implements Listene
                         if (hasItemToCook(furnace)) {
                             int time = furnace.getCookTime();
                             int max = 10 * 20;
-                            if (InteractionVisualizer.version.isNewerThan(MCVersion.V1_13_1)) {
-                                max = furnace.getCookTimeTotal();
-                            }
+                            max = furnace.getCookTimeTotal();
                             String symbol = "";
                             double percentagescaled = (double) time / (double) max * (double) progressBarLength;
                             double i = 1;
