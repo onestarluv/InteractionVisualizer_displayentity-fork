@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.loohp"
-version = "2026.1.4.0"
+version = "cbt-1.0"
 
 repositories {
     mavenCentral()
@@ -68,3 +68,12 @@ tasks.shadowJar {
 tasks.jar { archiveClassifier.set("plain") }
 tasks.assemble { dependsOn(tasks.shadowJar) }
 tasks.test { useJUnitPlatform() }
+
+// Collect the deployable artifact without copying plain/intermediate jars.
+val collectPluginArtifact = tasks.register<Copy>("collectPluginArtifact") {
+    val artifact = tasks.named<org.gradle.api.tasks.bundling.AbstractArchiveTask>("shadowJar")
+    dependsOn(artifact)
+    from(artifact.flatMap { it.archiveFile })
+    into(layout.projectDirectory.dir("../core/plugin"))
+}
+tasks.named("shadowJar") { finalizedBy(collectPluginArtifact) }

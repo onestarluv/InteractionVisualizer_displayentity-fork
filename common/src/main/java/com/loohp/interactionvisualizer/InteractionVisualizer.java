@@ -39,8 +39,6 @@ import com.loohp.interactionvisualizer.nms.NMS;
 import com.loohp.interactionvisualizer.objectholders.EntryKey;
 import com.loohp.interactionvisualizer.objectholders.ILightManager;
 import com.loohp.interactionvisualizer.placeholderAPI.Placeholders;
-import com.loohp.interactionvisualizer.updater.Updater;
-import com.loohp.interactionvisualizer.updater.Updater.UpdaterResponse;
 import com.loohp.interactionvisualizer.utils.MCVersion;
 import com.loohp.platformscheduler.Scheduler;
 import com.loohp.interactionvisualizer.config.ServerSettings;
@@ -103,7 +101,6 @@ public class InteractionVisualizer extends JavaPlugin {
 
     public static Integer lightUpdatePeriod = 10;
 
-    public static boolean updaterEnabled = true;
 
     public static Map<World, Integer> playerTrackingRange = new ConcurrentHashMap<>();
     public static boolean hideIfObstructed = false;
@@ -217,19 +214,7 @@ public class InteractionVisualizer extends JavaPlugin {
             }
         });
 
-        InteractionVisualizer.asyncExecutorManager.runTaskLaterAsynchronously(() -> {
-            if (updaterEnabled) {
-                UpdaterResponse version = Updater.checkUpdate();
-                if (!version.getResult().equals("latest")) {
-                    Updater.sendUpdateMessage(Bukkit.getConsoleSender(), version.getResult(), version.getSpigotPluginId());
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        if (player.hasPermission("interactionvisualizer.update")) {
-                            Updater.sendUpdateMessage(player, version.getResult(), version.getSpigotPluginId());
-                        }
-                    }
-                }
-            }
-        }, 100);
+
     }
 
     @Override
@@ -295,7 +280,6 @@ public class InteractionVisualizer extends JavaPlugin {
 
         lightUpdatePeriod = getConfiguration().getInt("LightUpdate.Period");
 
-        updaterEnabled = getConfiguration().getBoolean("Options.Updater");
 
         playerTrackingRange.clear();
         int defaultRange = getServer().spigot().getConfig().getInt("world-settings.default.entity-tracking-range.players", 64);

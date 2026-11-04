@@ -189,7 +189,6 @@ public enum ServerSetting {
     SETTINGS_PICKUPANIMATIONPLAYERYOFFSET("Settings.PickupAnimationPlayerYOffset", 0),
     SETTINGS_DISABLEDWORLDS("Settings.DisabledWorlds", java.util.List.of()),
     SETTINGS_HIDEIFVIEWOBSTRUCTED("Settings.HideIfViewObstructed", false),
-    OPTIONS_UPDATER("Options.Updater", true),
     OPTIONS_DOWNLOADLANGUAGEFILES("Options.DownloadLanguageFiles", true);
 
     private final String path;

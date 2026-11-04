@@ -1,12 +1,12 @@
 name: kokonut_ineteraction
-author: onestarluv
+author: pingpong
 contributors: [LOOHP]
-website: https://github.com/onestarluv/InteractionVisualizer_displayentity-fork
+website: https://wiki.egoverse.kr
 version: ${project.version}
 main: com.loohp.interactionvisualizer.InteractionVisualizer
 api-version: '26.3'
 folia-supported: true
-description: 블록 작업과 아이템을 시각 효과로 표시합니다.
+description: 에고버스 플러그인
 softdepend:
   - LightAPI
   - OpenInv
@@ -35,7 +35,4 @@ permissions:
     default: true
   interactionvisualizer.toggle.others:
     description: 다른 플레이어의 시각 효과 설정을 변경합니다.
-    default: op
-  interactionvisualizer.update:
-    description: 버전 확인 안내를 받습니다.
     default: op

@@ -382,6 +382,5 @@ Settings:
   HideIfViewObstructed: false
 
 Options:
-  Updater: true
   DownloadLanguageFiles: true
   

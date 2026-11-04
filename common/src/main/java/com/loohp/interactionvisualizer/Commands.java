@@ -26,8 +26,6 @@ import com.loohp.interactionvisualizer.managers.MaterialManager;
 import com.loohp.interactionvisualizer.managers.MusicManager;
 import com.loohp.interactionvisualizer.managers.PacketManager;
 import com.loohp.interactionvisualizer.objectholders.EntryKey;
-import com.loohp.interactionvisualizer.updater.Updater;
-import com.loohp.interactionvisualizer.updater.Updater.UpdaterResponse;
 import com.loohp.interactionvisualizer.utils.ChatColorUtils;
 import com.loohp.platformscheduler.Scheduler;
 import net.kyori.adventure.text.Component;
@@ -93,28 +91,6 @@ public class Commands implements CommandExecutor, TabCompleter {
                 }
             } else {
                 sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.Console")));
-            }
-            return true;
-        }
-
-        if (args[0].equalsIgnoreCase("update")) {
-            if (sender.hasPermission("interactionvisualizer.update")) {
-                sender.sendMessage(ChatColor.AQUA + "[kokonut_ineteraction] InteractionVisualizer 포크 관리자: onestarluv (원작: LOOHP)");
-                sender.sendMessage(ChatColor.GOLD + "[kokonut_ineteraction] 실행 중인 버전: " + plugin.getDescription().getVersion());
-                InteractionVisualizer.asyncExecutorManager.runTaskAsynchronously(() -> {
-                    UpdaterResponse version = Updater.checkUpdate();
-                    if (version.getResult().equals("latest")) {
-                        if (version.isDevBuildLatest()) {
-                            sender.sendMessage(ChatColor.GREEN + "[kokonut_ineteraction] 최신 버전을 사용 중입니다!");
-                        } else {
-                            Updater.sendUpdateMessage(sender, version.getResult(), version.getSpigotPluginId(), true);
-                        }
-                    } else {
-                        Updater.sendUpdateMessage(sender, version.getResult(), version.getSpigotPluginId());
-                    }
-                });
-            } else {
-                sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.NoPermission")));
             }
             return true;
         }

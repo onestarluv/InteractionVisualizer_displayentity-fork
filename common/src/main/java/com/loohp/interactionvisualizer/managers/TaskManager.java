@@ -59,7 +59,6 @@ import com.loohp.interactionvisualizer.debug.Debug;
 import com.loohp.interactionvisualizer.entities.ItemDisplay;
 import com.loohp.interactionvisualizer.entities.VillagerDisplay;
 import com.loohp.interactionvisualizer.objectholders.EntryKey;
-import com.loohp.interactionvisualizer.updater.Updater;
 import com.loohp.interactionvisualizer.utils.MCVersion;
 import com.loohp.platformscheduler.Scheduler;
 import com.loohp.interactionvisualizer.config.ServerSettings;
@@ -170,7 +169,7 @@ public class TaskManager {
         List<EntryKey> keys = new ArrayList<>();
 
         Bukkit.getPluginManager().registerEvents(new Debug(), plugin);
-        Bukkit.getPluginManager().registerEvents(new Updater(), plugin);
+
         Bukkit.getPluginManager().registerEvents(new com.loohp.interactionvisualizer.listeners.Events(), plugin);
         Bukkit.getPluginManager().registerEvents(new PacketManager(), plugin);
 

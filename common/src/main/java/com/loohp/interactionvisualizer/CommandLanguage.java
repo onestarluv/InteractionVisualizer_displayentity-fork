@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 final class CommandLanguage {
-    static final Map<String, String> ACTIONS = Map.of("토글", "toggle", "새로고침", "refresh", "리로드", "reload", "업데이트", "update", "설정창", "gui");
+    static final Map<String, String> ACTIONS = Map.of("토글", "toggle", "새로고침", "refresh", "리로드", "reload", "설정창", "gui");
     static final Map<String, String> VALUES = Map.of("켜기", "true", "끄기", "false");
     static final Map<String, String> ENTRIES = new LinkedHashMap<>();
     static {

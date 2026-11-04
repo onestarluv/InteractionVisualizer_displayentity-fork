@@ -22,7 +22,6 @@ More information (screenshots, commands, permissions) about the plugin can be fo
 - `/시각효과 토글 벌통 끄기` — 벌통의 모든 효과 끄기
 - `/시각효과 새로고침` — 본인 화면의 시각 효과 다시 표시
 - `/시각효과 리로드` — 설정 다시 불러오기 (관리자)
-- `/시각효과 업데이트` — 원본 프로젝트 버전 확인
 
 아이템·드롭·홀로그램 종류를 나누지 않고 한 번에 설정합니다. 켜기/끄기를 생략하면 해당 항목의 효과가 하나라도 켜져 있을 때 모두 끄고, 모두 꺼져 있을 때 모두 켭니다. 다른 플레이어를 지정하려면 관리자 권한이 필요합니다. 한국어 자동완성과 블록 이름을 지원합니다. `/iv`와 기존 영어 인자는 호환용으로 사용할 수 있습니다.
 
@@ -146,3 +145,6 @@ It also **supports my development**, take it as an alternative way to donate whi
 **https://www.bisecthosting.com/loohp**
 
 [![](https://www.bisecthosting.com/partners/custom-banners/96e11ee5-50e4-494f-854d-8c1708813abd.png)](https://www.bisecthosting.com/loohp)
+
+
+원본 프로젝트 업데이트 조회·알림은 제거했습니다. 시작 시·접속 시·명령어 실행 시 외부 버전 서버를 조회하지 않습니다. 실행 버전은 /시각효과에서 확인합니다. bStats 통계와 언어 파일 다운로드 기능은 이번 제거 대상에 포함하지 않았습니다.
