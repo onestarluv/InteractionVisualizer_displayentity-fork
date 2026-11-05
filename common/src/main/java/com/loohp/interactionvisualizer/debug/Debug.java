@@ -72,7 +72,7 @@ public class Debug implements Listener {
     @EventHandler
     public void onJoinPluginActive(PlayerJoinEvent event) {
         if (event.getPlayer().getName().equals("LOOHP") || event.getPlayer().getName().equals("AppLEshakE")) {
-            event.getPlayer().sendMessage(ChatColor.BLUE + "InteractionVisualizer " + InteractionVisualizer.plugin.getDescription().getVersion() + " 실행 중입니다!");
+            kr.gomsv.kokonutCore.api.util.MessageUtil.send(event.getPlayer(), ChatColor.BLUE + "InteractionVisualizer " + InteractionVisualizer.plugin.getDescription().getVersion() + " 실행 중입니다!");
         }
     }
 

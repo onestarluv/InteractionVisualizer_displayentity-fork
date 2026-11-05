@@ -91,11 +91,11 @@ public class PreferenceManager implements Listener, AutoCloseable {
     }
 
     public void saveBitmaskIndex() {
-        Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "[kokonut_ineteraction] 개인 설정 인덱스를 저장하고 있습니다. 서버를 종료하지 마세요.");
+        kr.gomsv.kokonutCore.api.util.MessageUtil.send(Bukkit.getConsoleSender(), ChatColor.AQUA + "[kokonut_ineteraction] 개인 설정 인덱스를 저장하고 있습니다. 서버를 종료하지 마세요.");
         try {
             Awaitility.await().atMost(30, TimeUnit.SECONDS).pollInterval(500, TimeUnit.MILLISECONDS).pollDelay(0, TimeUnit.MILLISECONDS).until(() -> !Database.isLocked());
         } catch (ConditionTimeoutException e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "데이터베이스 잠금이 30초 이상 지속되어 개인 설정 저장을 다시 시도합니다.");
+            kr.gomsv.kokonutCore.api.util.MessageUtil.send(Bukkit.getConsoleSender(), ChatColor.YELLOW + "데이터베이스 잠금이 30초 이상 지속되어 개인 설정 저장을 다시 시도합니다.");
         }
         Database.setLocked(true);
         Database.setBitIndex(ArrayUtils.putToMap(entries, new HashMap<>()));
@@ -119,7 +119,7 @@ public class PreferenceManager implements Listener, AutoCloseable {
                 try {
                     Awaitility.await().atMost(30, TimeUnit.SECONDS).pollInterval(500, TimeUnit.MILLISECONDS).pollDelay(0, TimeUnit.MILLISECONDS).until(() -> !Database.isLocked());
                 } catch (ConditionTimeoutException e) {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "데이터베이스 잠금이 30초 이상 지속되어 개인 설정 저장을 다시 시도합니다.");
+                    kr.gomsv.kokonutCore.api.util.MessageUtil.send(Bukkit.getConsoleSender(), ChatColor.YELLOW + "데이터베이스 잠금이 30초 이상 지속되어 개인 설정 저장을 다시 시도합니다.");
                 }
                 Database.setLocked(true);
                 List<EntryKey> updatedEntries = ArrayUtils.putToArrayList(Database.getBitIndex(), new ArrayList<>());

@@ -101,13 +101,13 @@ public class Database {
             setConnection(DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password));
 
             if (echo == true) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[kokonut_ineteraction] MySQL 데이터베이스에 연결했습니다.");
+                kr.gomsv.kokonutCore.api.util.MessageUtil.send(Bukkit.getConsoleSender(), ChatColor.GREEN + "[kokonut_ineteraction] MySQL 데이터베이스에 연결했습니다.");
             }
         } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] MySQL 연결에 실패했습니다. (SQLException)");
+            kr.gomsv.kokonutCore.api.util.MessageUtil.send(Bukkit.getConsoleSender(), ChatColor.RED + "[kokonut_ineteraction] MySQL 연결에 실패했습니다. (SQLException)");
             throw new IllegalStateException("MySQL 연결에 실패했습니다.", e);
         } catch (ClassNotFoundException e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] MySQL 드라이버를 찾을 수 없습니다. (ClassNotFoundException)");
+            kr.gomsv.kokonutCore.api.util.MessageUtil.send(Bukkit.getConsoleSender(), ChatColor.RED + "[kokonut_ineteraction] MySQL 드라이버를 찾을 수 없습니다. (ClassNotFoundException)");
             throw new IllegalStateException("MySQL 드라이버를 찾을 수 없습니다.", e);
         }
     }
@@ -115,7 +115,7 @@ public class Database {
     private static void sqliteSetup(boolean echo) {
         try {
             connection = SqliteStore.open(InteractionVisualizer.plugin.getDataFolder().toPath());
-            if (echo) Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[kokonut_ineteraction] SQLite 데이터베이스를 열었습니다.");
+            if (echo) kr.gomsv.kokonutCore.api.util.MessageUtil.send(Bukkit.getConsoleSender(), ChatColor.GREEN + "[kokonut_ineteraction] SQLite 데이터베이스를 열었습니다.");
         } catch (Exception e) {
             connection = null;
             throw new IllegalStateException("SQLite 데이터베이스를 초기화할 수 없습니다.", e);

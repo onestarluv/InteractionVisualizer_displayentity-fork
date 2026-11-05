@@ -113,11 +113,11 @@ public class InteractionVisualizer extends JavaPlugin {
     public static AsyncExecutorManager asyncExecutorManager;
 
     private static void hookMessage(String pluginName) {
-        Bukkit.getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[kokonut_ineteraction] 연동한 플러그인: " + pluginName + "!");
+        kr.gomsv.kokonutCore.api.util.MessageUtil.send(Bukkit.getConsoleSender(), ChatColor.LIGHT_PURPLE + "[kokonut_ineteraction] 연동한 플러그인: " + pluginName + "!");
     }
 
     public static void sendMessage(CommandSender sender, Component component) {
-        sender.spigot().sendMessage(ComponentSerializer.parse(GsonComponentSerializer.gson().serialize(component)));
+        kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, component);
     }
 
     public static boolean isPluginEnabled(String name) {
@@ -135,7 +135,7 @@ public class InteractionVisualizer extends JavaPlugin {
         version = MCVersion.resolve();
 
         if (!version.isSupported()) {
-            getServer().getConsoleSender().sendMessage(org.bukkit.ChatColor.RED + "[kokonut_ineteraction] 마인크래프트 26.3만 지원합니다.");
+            kr.gomsv.kokonutCore.api.util.MessageUtil.send(getServer().getConsoleSender(), org.bukkit.ChatColor.RED + "[kokonut_ineteraction] 마인크래프트 26.3만 지원합니다.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -205,8 +205,8 @@ public class InteractionVisualizer extends JavaPlugin {
         exemptBlocks.add("SPAWNER");
         exemptBlocks.add("MOB_SPAWNER");
         exemptBlocks.add("BEACON");
-        
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[kokonut_ineteraction] 플러그인을 활성화했습니다.");
+
+        kr.gomsv.kokonutCore.api.util.MessageUtil.send(getServer().getConsoleSender(), ChatColor.GREEN + "[kokonut_ineteraction] 플러그인을 활성화했습니다.");
 
         Scheduler.runTask(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -227,7 +227,7 @@ public class InteractionVisualizer extends JavaPlugin {
         }
 
         if (!PacketManager.active.isEmpty() && !Bukkit.getOnlinePlayers().isEmpty()) {
-            getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[kokonut_ineteraction] 플러그인 리로드를 감지해 표시 엔티티를 제거합니다. 문제가 생기면 서버를 재시작하세요.");
+            kr.gomsv.kokonutCore.api.util.MessageUtil.send(getServer().getConsoleSender(), ChatColor.YELLOW + "[kokonut_ineteraction] 플러그인 리로드를 감지해 표시 엔티티를 제거합니다. 문제가 생기면 서버를 재시작하세요.");
             int[] entityIdArray = PacketManager.active.keySet().stream().mapToInt(each -> each.getEntityId()).toArray();
             Object[] packets = NMS.getInstance().createEntityDestroyPacket(entityIdArray);
 
@@ -241,7 +241,7 @@ public class InteractionVisualizer extends JavaPlugin {
         if (asyncExecutorManager != null) {
             asyncExecutorManager.close();
         }
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] 플러그인을 비활성화했습니다.");
+        kr.gomsv.kokonutCore.api.util.MessageUtil.send(getServer().getConsoleSender(), ChatColor.RED + "[kokonut_ineteraction] 플러그인을 비활성화했습니다.");
     }
 
     public ServerSettings getConfiguration() {

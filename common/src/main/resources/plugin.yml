@@ -36,3 +36,5 @@ permissions:
   interactionvisualizer.toggle.others:
     description: 다른 플레이어의 시각 효과 설정을 변경합니다.
     default: op
+
+depend: [Kokonut-Core]

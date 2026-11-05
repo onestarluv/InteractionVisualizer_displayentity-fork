@@ -57,7 +57,7 @@ public class Toggle {
         }
         InteractionVisualizer.preferenceManager.updatePlayer(player, true);
         String message = plugin.getConfiguration().getString(enabled ? "Messages.Toggle.ToggleOn" : "Messages.Toggle.ToggleOff");
-        if (verbose) sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', message.replace("%e", group).replace("%m", "전체 효과")));
+        if (verbose) kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColorUtils.translateAlternateColorCodes('&', message.replace("%e", group).replace("%m", "전체 효과")));
         return true;
     }
 
@@ -95,17 +95,17 @@ public class Toggle {
             InteractionVisualizer.preferenceManager.setPlayerPreference(player.getUniqueId(), mode, entry, value, false);
             if (verbose && entryGroupName == null) {
                 if (value) {
-                    sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.ToggleOn").replace("%m", InteractionVisualizerAPI.getUserFriendlyName(mode)).replace("%e", InteractionVisualizerAPI.getUserFriendlyName(entry))));
+                    kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.ToggleOn").replace("%m", InteractionVisualizerAPI.getUserFriendlyName(mode)).replace("%e", InteractionVisualizerAPI.getUserFriendlyName(entry))));
                 } else {
-                    sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.ToggleOff").replace("%m", InteractionVisualizerAPI.getUserFriendlyName(mode)).replace("%e", InteractionVisualizerAPI.getUserFriendlyName(entry))));
+                    kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.ToggleOff").replace("%m", InteractionVisualizerAPI.getUserFriendlyName(mode)).replace("%e", InteractionVisualizerAPI.getUserFriendlyName(entry))));
                 }
             }
         }
         if (verbose && entryGroupName != null) {
             if (value) {
-                sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.ToggleOn").replace("%m", InteractionVisualizerAPI.getUserFriendlyName(mode)).replace("%e", entryGroupName)));
+                kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.ToggleOn").replace("%m", InteractionVisualizerAPI.getUserFriendlyName(mode)).replace("%e", entryGroupName)));
             } else {
-                sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.ToggleOff").replace("%m", InteractionVisualizerAPI.getUserFriendlyName(mode)).replace("%e", entryGroupName)));
+                kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.ToggleOff").replace("%m", InteractionVisualizerAPI.getUserFriendlyName(mode)).replace("%e", entryGroupName)));
             }
         }
         InteractionVisualizer.preferenceManager.updatePlayer(player, true);

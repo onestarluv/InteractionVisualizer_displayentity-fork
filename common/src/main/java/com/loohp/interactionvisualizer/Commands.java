@@ -56,15 +56,15 @@ public class Commands implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.AQUA + "[kokonut_ineteraction] InteractionVisualizer 포크 관리자: onestarluv (원작: LOOHP)");
-            sender.sendMessage(ChatColor.GOLD + "[kokonut_ineteraction] 실행 중인 버전: " + plugin.getDescription().getVersion());
+            kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColor.AQUA + "[kokonut_ineteraction] InteractionVisualizer 포크 관리자: onestarluv (원작: LOOHP)");
+            kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColor.GOLD + "[kokonut_ineteraction] 실행 중인 버전: " + plugin.getDescription().getVersion());
             return true;
         }
 
         if (args[0].equalsIgnoreCase("gui")) {
-            if (!sender.hasPermission("interactionvisualizer.toggle")) sender.sendMessage(ChatColor.RED + "이 명령어를 사용할 권한이 없습니다.");
-            else if (!(sender instanceof Player player)) sender.sendMessage(ChatColor.RED + "게임 안에서만 설정 창을 열 수 있습니다.");
-            else if (args.length != 1) sender.sendMessage(ChatColor.RED + "사용법: /시각효과 gui");
+            if (!sender.hasPermission("interactionvisualizer.toggle")) kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColor.RED + "이 명령어를 사용할 권한이 없습니다.");
+            else if (!(sender instanceof Player player)) kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColor.RED + "게임 안에서만 설정 창을 열 수 있습니다.");
+            else if (args.length != 1) kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColor.RED + "사용법: /시각효과 gui");
             else ToggleGui.open(player);
             return true;
         }
@@ -74,9 +74,9 @@ public class Commands implements CommandExecutor, TabCompleter {
                 plugin.loadConfig();
                 MusicManager.reloadConfig();
                 MaterialManager.reloadConfig();
-                sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Reload")));
+                kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Reload")));
             } else {
-                sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.NoPermission")));
+                kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.NoPermission")));
             }
             return true;
         }
@@ -87,33 +87,33 @@ public class Commands implements CommandExecutor, TabCompleter {
                 if (player.hasPermission("interactionvisualizer.refresh")) {
                     Scheduler.runTask(InteractionVisualizer.plugin, () -> PacketManager.reset(player));
                 } else {
-                    sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.NoPermission")));
+                    kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.NoPermission")));
                 }
             } else {
-                sender.sendMessage(ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.Console")));
+                kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColorUtils.translateAlternateColorCodes('&', plugin.getConfiguration().getString("Messages.Toggle.Console")));
             }
             return true;
         }
 
         if (args[0].equalsIgnoreCase("toggle")) {
             if (!sender.hasPermission("interactionvisualizer.toggle")) {
-                sender.sendMessage(ChatColor.RED + "이 명령어를 사용할 권한이 없습니다.");
+                kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColor.RED + "이 명령어를 사용할 권한이 없습니다.");
                 return true;
             }
             final CommandLanguage.ToggleArguments request;
             try {
                 request = CommandLanguage.toggleArguments(args);
             } catch (IllegalArgumentException e) {
-                sender.sendMessage(ChatColor.RED + "사용법: /시각효과 토글 <블록/전체> [켜기/끄기] [플레이어]");
+                kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColor.RED + "사용법: /시각효과 토글 <블록/전체> [켜기/끄기] [플레이어]");
                 return true;
             }
             Player player = request.player() == null ? (sender instanceof Player self ? self : null) : Bukkit.getPlayerExact(request.player());
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + (request.player() == null ? "콘솔에서는 대상 플레이어를 지정하세요." : "해당 플레이어가 접속 중이 아닙니다."));
+                kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColor.RED + (request.player() == null ? "콘솔에서는 대상 플레이어를 지정하세요." : "해당 플레이어가 접속 중이 아닙니다."));
                 return true;
             }
             if (sender instanceof Player && !player.equals(sender) && !sender.hasPermission("interactionvisualizer.toggle.others")) {
-                sender.sendMessage(ChatColor.RED + "다른 플레이어의 설정을 변경할 권한이 없습니다.");
+                kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColor.RED + "다른 플레이어의 설정을 변경할 권한이 없습니다.");
                 return true;
             }
             final EntryKey[] entries;
@@ -129,7 +129,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                     group = InteractionVisualizerAPI.getUserFriendlyName(entry);
                 }
             } catch (IllegalArgumentException e) {
-                sender.sendMessage(ChatColor.RED + "지원하지 않는 블록 또는 항목입니다. 자동완성에서 선택하세요.");
+                kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColor.RED + "지원하지 않는 블록 또는 항목입니다. 자동완성에서 선택하세요.");
                 return true;
             }
             InteractionVisualizer.asyncExecutorManager.runTaskAsynchronously(() -> Toggle.toggleAll(sender, player, request.enabled(), group, entries));
@@ -140,11 +140,11 @@ public class Commands implements CommandExecutor, TabCompleter {
             text = text.color(NamedTextColor.YELLOW);
             Component bone = LegacyComponentSerializer.legacySection().deserialize("\u00a7eNana's Bone\n\u00a77Lost \u00a76In-\u00a7dMaginary~~");
             text = text.hoverEvent(HoverEvent.showText(bone)).clickEvent(ClickEvent.openUrl("https://www.instagram.com/narliar/"));
-            InteractionVisualizer.sendMessage(sender, text);
+            kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, text);
             return true;
         }
 
-        sender.sendMessage(ChatColor.RED + "알 수 없는 명령어입니다. /시각효과 토글 <블록/전체> [켜기/끄기]를 사용하세요.");
+        kr.gomsv.kokonutCore.api.util.MessageUtil.send(sender, ChatColor.RED + "알 수 없는 명령어입니다. /시각효과 토글 <블록/전체> [켜기/끄기]를 사용하세요.");
         return true;
     }
 
@@ -171,7 +171,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                 }
             });
         } else if (args[0].equalsIgnoreCase("toggle") && sender.hasPermission("interactionvisualizer.toggle")) {
-            
+
             if (args.length == 2) {
                 candidates.putAll(CommandLanguage.ENTRIES);
                 InteractionVisualizer.preferenceManager.getRegisteredEntries().forEach(entry -> candidates.put(entry.toString(), entry.toString()));

@@ -110,7 +110,7 @@ public class ItemDisplay extends VisualizerRunnableDisplay implements Listener {
                     Material m = Material.valueOf(entry.get(1).toUpperCase());
                     material = e -> e.equals(m);
                 } catch (Exception er) {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[kokonut_ineteraction] " + entry.get(1).toUpperCase() + ": 올바른 아이템 종류가 아닙니다.");
+                    kr.gomsv.kokonutCore.api.util.MessageUtil.send(Bukkit.getConsoleSender(), ChatColor.RED + "[kokonut_ineteraction] " + entry.get(1).toUpperCase() + ": 올바른 아이템 종류가 아닙니다.");
                     material = e -> true;
                 }
             } else {

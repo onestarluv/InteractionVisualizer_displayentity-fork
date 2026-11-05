@@ -30,6 +30,7 @@ sourceSets.main {
 }
 
 dependencies {
+    compileOnly(files("../core/Kokonut-Core/build/libs/Kokonut-Core-cbt-1.0.jar"))
     paperweight.paperDevBundle("26.3.build.235-stable")
     implementation("com.loohp:PlatformScheduler:1.0.0")
     implementation("com.loohp:YamlConfiguration:1.0.1.4")
