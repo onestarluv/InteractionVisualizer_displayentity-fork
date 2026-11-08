@@ -188,8 +188,7 @@ public enum ServerSetting {
     SETTINGS_USEHANDSWINGANIMATION("Settings.UseHandSwingAnimation", true),
     SETTINGS_PICKUPANIMATIONPLAYERYOFFSET("Settings.PickupAnimationPlayerYOffset", 0),
     SETTINGS_DISABLEDWORLDS("Settings.DisabledWorlds", java.util.List.of()),
-    SETTINGS_HIDEIFVIEWOBSTRUCTED("Settings.HideIfViewObstructed", false),
-    OPTIONS_DOWNLOADLANGUAGEFILES("Options.DownloadLanguageFiles", true);
+    SETTINGS_HIDEIFVIEWOBSTRUCTED("Settings.HideIfViewObstructed", false);
 
     private final String path;
     private final Object value;

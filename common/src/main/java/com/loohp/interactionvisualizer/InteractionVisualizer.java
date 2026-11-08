@@ -25,7 +25,6 @@ import com.loohp.interactionvisualizer.api.events.InteractionVisualizerReloadEve
 import com.loohp.interactionvisualizer.config.Config;
 import com.loohp.interactionvisualizer.database.Database;
 import com.loohp.interactionvisualizer.managers.AsyncExecutorManager;
-import com.loohp.interactionvisualizer.managers.LangManager;
 import com.loohp.interactionvisualizer.managers.LightManager;
 import com.loohp.interactionvisualizer.managers.MaterialManager;
 import com.loohp.interactionvisualizer.managers.MusicManager;
@@ -165,10 +164,6 @@ public class InteractionVisualizer extends JavaPlugin {
             getDataFolder().mkdirs();
         }
         loadConfig();
-
-        if (getConfiguration().getBoolean("Options.DownloadLanguageFiles")) {
-            Scheduler.runTaskAsynchronously(this, () -> LangManager.generate());
-        }
 
         MusicManager.setup();
         try {

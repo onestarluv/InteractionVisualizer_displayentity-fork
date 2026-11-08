@@ -380,7 +380,3 @@ Settings:
   #MIGHT BE RESOURCE INTENSIVE
   #MIGHT BE RESOURCE INTENSIVE
   HideIfViewObstructed: false
-
-Options:
-  DownloadLanguageFiles: true
-  

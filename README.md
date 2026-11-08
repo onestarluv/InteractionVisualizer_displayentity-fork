@@ -131,8 +131,9 @@ Replace `VERSION` with the version number.
 - [PremiumVanish](https://www.spigotmc.org/resources/premiumvanish-stay-hidden-bungee-support.14404/)
 - [CMI](https://www.spigotmc.org/resources/cmi-270-commands-insane-kits-portals-essentials-economy-mysql-sqlite-much-more.3742/) ([Public API](https://github.com/Zrips/CMI-API))
 
-## Community Maintained Languages
-Link to repository: https://github.com/LOOHP/InteractionVisualizerLanguages
+## 언어 파일
+
+명령어·안내 문구는 플러그인에 내장되어 있습니다. 시작 시 GitHub 언어 저장소를 내려받던 코드와 설정을 제거했습니다. 기존 `Language_Repo`는 읽지 않으며, 예전 설정에 `Options.DownloadLanguageFiles`가 남아 있어도 사용하지 않습니다.
 
 ## Upstream Partnerships (LOOHP)
 
