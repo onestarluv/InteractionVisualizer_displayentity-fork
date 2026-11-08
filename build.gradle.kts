@@ -30,7 +30,7 @@ sourceSets.main {
 }
 
 dependencies {
-    compileOnly(files("../core/Kokonut-Core/build/libs/Kokonut-Core-cbt-1.0.jar"))
+    compileOnly(files("../Kokonut_Core/build/libs/Kokonut-Core-cbt-1.0.jar"))
     paperweight.paperDevBundle("26.3.build.235-stable")
     implementation("com.loohp:PlatformScheduler:1.0.0")
     implementation("com.loohp:YamlConfiguration:1.0.1.4")
@@ -75,6 +75,14 @@ val collectPluginArtifact = tasks.register<Copy>("collectPluginArtifact") {
     val artifact = tasks.named<org.gradle.api.tasks.bundling.AbstractArchiveTask>("shadowJar")
     dependsOn(artifact)
     from(artifact.flatMap { it.archiveFile })
-    into(layout.projectDirectory.dir("../core/plugin"))
+    into(layout.projectDirectory.dir("../plugin"))
 }
 tasks.named("shadowJar") { finalizedBy(collectPluginArtifact) }
+// 테스트 서버 plugins 폴더로도 바로 복사한다 (-PdeployDir=... 로 경로 변경 가능).
+val deployPluginArtifact = tasks.register<Copy>("deployPluginArtifact") {
+    val artifact = tasks.named<org.gradle.api.tasks.bundling.AbstractArchiveTask>("shadowJar")
+    dependsOn(artifact)
+    from(artifact.flatMap { it.archiveFile })
+    into(providers.gradleProperty("deployDir").orElse("D:/egoverse/home1/plugins"))
+}
+tasks.named("shadowJar") { finalizedBy(deployPluginArtifact) }
